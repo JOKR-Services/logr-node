@@ -1,0 +1,15 @@
+{
+  "name": "daki-nodejs-logger",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "run:basic": "ts-node -r tsconfig-paths/register --transpile-only ./src/examples/using-logger-in-a-basic-function.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.3"
+  }
+}
