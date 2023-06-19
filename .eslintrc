@@ -59,12 +59,6 @@
       "error",
       "single"
     ],
-    "camelcase": [
-      "error",
-      {
-        "properties": "always"
-      }
-    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
