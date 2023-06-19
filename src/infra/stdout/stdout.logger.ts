@@ -1,8 +1,8 @@
-import { ILoggerErrorPattern } from '../../domain/interfaces/logger-error-pattern.interface';
 import { ILogger } from '../../domain/interfaces';
+import { ILoggerErrorPattern } from '../../domain/interfaces/logger-error-pattern.interface';
 
 export class StdoutLogger implements ILogger {
-	error(error: ILoggerErrorPattern): void {
-		console.log(error);
-	}
+  public error(error: ILoggerErrorPattern): void {
+    console.log(error);
+  }
 }

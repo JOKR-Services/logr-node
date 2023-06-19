@@ -1,1 +1,1 @@
-export * from './logger.interface';
+export { ILogger } from './logger.interface';
