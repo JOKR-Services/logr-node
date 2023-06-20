@@ -5,9 +5,12 @@
   "license": "MIT",
   "scripts": {
     "run:basic": "ts-node -r tsconfig-paths/register --transpile-only ./src/examples/using-logger-in-a-basic-function.ts",
-    "lint": "eslint '*/**/*.{js,ts}'"
+    "lint": "eslint '*/**/*.{js,ts}'",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.5",
     "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
@@ -15,6 +18,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
+    "husky": "^8.0.3",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
