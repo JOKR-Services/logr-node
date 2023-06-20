@@ -1,3 +1,5 @@
+import { ILogger } from '../interfaces';
+
 /**
  * Captura a exceção e escreve de acordo com o logger utilizando no @UseLoggerError
  * @returns void
@@ -9,9 +11,15 @@ export function CatchException() {
     descriptor.value = async function (...args: any[]) {
       try {
         return await method.apply(this, args);
-      } catch (e) {
+      } catch (e: any) {
+        const { __king, __loger, __className } = this as {
+          __className: string;
+          __king: string;
+          __loger: ILogger;
+        };
+
         const trigger = {
-          name: this.__className,
+          name: __className,
           method_name: propertyKey,
           params: JSON.stringify(args)
         };
@@ -20,10 +28,10 @@ export function CatchException() {
           stack: e.stack,
           name: e.name,
           message: e.message,
-          kind: this.__kind
+          kind: __king
         };
 
-        this.__logger.error({ error: err, logger: trigger });
+        __loger.error({ error: err, logger: trigger });
       }
     };
   };
