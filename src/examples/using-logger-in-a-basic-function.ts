@@ -1,8 +1,7 @@
-import { CatchException } from '../domain/decorators/catch-exception.decorator';
-import { UseLoggerError } from '../domain/decorators/use-logger-error.decorator';
-import { StdoutLogger } from '../infra/stdout/stdout.logger';
+import { CatchException, UseLoggerError } from '@domain/decorators';
+import { LoggerStdout } from '@infra/stdout';
 
-@UseLoggerError(new StdoutLogger())
+@UseLoggerError(new LoggerStdout())
 class BasicClass {
   @CatchException()
   public basicFunction(_someParam: any, _test: string) {

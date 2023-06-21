@@ -9,9 +9,11 @@ export function CatchException() {
     descriptor.value = async function (...args: any[]) {
       try {
         return await method.apply(this, args);
-      } catch (e) {
+      } catch (e: any) {
+        const { __className, __kind, __logger } = this as any;
+
         const trigger = {
-          name: this.__className,
+          name: __className,
           method_name: propertyKey,
           params: JSON.stringify(args)
         };
@@ -20,10 +22,10 @@ export function CatchException() {
           stack: e.stack,
           name: e.name,
           message: e.message,
-          kind: this.__kind
+          kind: __kind
         };
 
-        this.__logger.error({ error: err, logger: trigger });
+        __logger.error({ error: err, logger: trigger });
       }
     };
   };

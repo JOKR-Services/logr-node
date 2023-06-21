@@ -1,14 +1,14 @@
 export interface IErrorInfo {
   stack: string;
   name: string;
-  message: any;
+  message: string;
   kind: string;
 }
 
 export interface IBasicInfo {
   name: string;
   method_name: string;
-  params: any;
+  params: unknown;
 }
 
 export interface ILoggerErrorPattern {
