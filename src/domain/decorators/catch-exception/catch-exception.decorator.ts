@@ -3,7 +3,11 @@
  * @returns void
  */
 export function CatchException() {
-  return function (_: unknown, propertyKey: string, descriptor: PropertyDescriptor): void {
+  return function (
+    _: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ): PropertyDescriptor {
     const method = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -28,5 +32,7 @@ export function CatchException() {
         __logger.error({ error: err, logger: trigger });
       }
     };
+
+    return descriptor;
   };
 }
