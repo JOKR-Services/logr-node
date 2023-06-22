@@ -42,6 +42,7 @@ describe('CatchException', () => {
     new ClassMock().isString(null);
 
     expect(loggerMock.error).toBeCalled();
+    expect(loggerMock.error).toBeCalledTimes(1);
     expect(loggerMock.error).toBeCalledWith({
       error: {
         stack: ErrorMock.stack,
