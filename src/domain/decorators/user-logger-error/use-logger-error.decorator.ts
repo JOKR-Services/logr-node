@@ -1,4 +1,4 @@
-import { ILogger } from '../interfaces';
+import { ILogger } from '@domain/interfaces';
 
 type Target = { new (...args: any[]): NonNullable<unknown> };
 
