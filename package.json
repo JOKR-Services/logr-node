@@ -7,8 +7,11 @@
     "run:basic": "ts-node -r tsconfig-paths/register --transpile-only ./src/examples/using-logger-in-a-basic-function.ts",
     "lint": "eslint '*/**/*.{js,ts}'",
     "prepare": "husky install",
+    "prettier": "prettier --write '*/**/*.{js,ts}'",
     "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch --coverage"
+    "test:watch": "jest --watch --coverage",
+    "type:check": "yarn tsc --noEmit",
+    "type:watch": "yarn tsc -w --noEmit"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.5",
