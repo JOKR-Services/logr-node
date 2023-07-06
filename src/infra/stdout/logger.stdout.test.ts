@@ -33,7 +33,7 @@ describe('LoggerStdout', () => {
 
       logger.error(error);
 
-      expect(writeSpy).toHaveBeenCalledWith(JSON.stringify(error, null, 2));
+      expect(writeSpy).toHaveBeenCalledWith(`${JSON.stringify(error, null, 2)}\n`);
       expect(writeSpy).toBeCalledTimes(1);
     });
   });
