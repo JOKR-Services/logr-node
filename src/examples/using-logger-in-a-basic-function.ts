@@ -1,10 +1,11 @@
-import { CatchException, UseLoggerError } from '@domain/decorators';
-import { LoggerStdout } from '@infra/stdout';
+import { CatchException } from '@domain/decorators'; // 'logr-node'
+import { Logr } from '@domain/logr';
 
-@UseLoggerError(new LoggerStdout())
-class BasicClass {
-  @CatchException()
-  public basicFunction(_someParam: any, _test: string) {
+export class BasicClass {
+  constructor(private readonly logger?: Logr) {}
+
+  @CatchException({ kind: 'Application' })
+  public basicFunction(_someParam: any, _test: string): void {
     const e: any = {};
     console.log(e.someProperty.throwErrorNow);
   }
