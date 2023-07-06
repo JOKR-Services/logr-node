@@ -1,3 +1,3 @@
-export const loggerMock = {
+export const loggerMock: any = {
   error: jest.fn()
 };
