@@ -1,3 +1,4 @@
+import '@infra/datadog';
 /**
  * Captura a exceção e escreve de acordo com o logger utilizando no @UseLoggerError
  * @returns void
