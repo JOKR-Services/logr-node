@@ -1,2 +1,8 @@
-export { ILogger } from './logger.interface';
-export { IBasicInfo, IErrorInfo, ILoggerErrorPattern } from './logger-error-pattern.interface';
+export {
+  IErrorInfo,
+  ILogger,
+  ILoggerErrorPattern,
+  ILoggerService,
+  ILoggerTrigger,
+  LoggerCaller
+} from './logger.interface';

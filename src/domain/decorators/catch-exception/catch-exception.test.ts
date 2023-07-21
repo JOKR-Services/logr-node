@@ -1,66 +1,112 @@
-import { loggerMock } from '@fixtures/mock/logger.mock';
+import { loggerMock as logger } from '@fixtures/mock/logger.mock';
 
 import { CatchException } from './catch-exception.decorator';
 
-const ErrorMock = new Error('Some Error');
+const ErrorMock: any = new Error('Some Error');
 
-const kindMock = 'Test';
-const classNameMock = 'ClassMock';
-
-class ClassMock {
-  public isString(value: any): void {
-    if (typeof value !== 'string') {
-      throw ErrorMock;
-    }
-  }
-}
-
-describe('CatchException', () => {
-  beforeAll(() => {
-    const descriptor = CatchException()(
-      ClassMock.constructor,
-      'isString',
-      Object.getOwnPropertyDescriptor(ClassMock.prototype, 'isString') as PropertyDescriptor
-    );
-
-    Object.defineProperty(ClassMock.prototype, 'isString', descriptor);
-  });
+describe('@CatchException', () => {
+  let options: any;
+  let target: any;
+  let propertyKey: string;
+  let descriptor: PropertyDescriptor;
 
   beforeEach(() => {
-    Object.defineProperties(ClassMock.prototype, {
-      __kind: { value: kindMock },
-      __className: { value: classNameMock },
-      __logger: { value: loggerMock }
-    });
+    options = {};
+    target = {};
+    propertyKey = 'methodName';
+    descriptor = {
+      value: jest.fn()
+    };
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should log the error and the logger trigger if the method throws an exception', () => {
-    new ClassMock().isString(null);
+  it('should call the method and return its result if no exception is thrown', async () => {
+    const args = ['arg1', 'arg2'];
+    const returnValue: any = 'result';
+    descriptor.value.mockResolvedValue(returnValue);
 
-    expect(loggerMock.error).toBeCalled();
-    expect(loggerMock.error).toBeCalledTimes(1);
-    expect(loggerMock.error).toBeCalledWith({
-      error: {
-        stack: ErrorMock.stack,
-        name: ErrorMock.name,
-        message: ErrorMock.message,
-        kind: kindMock
-      },
-      logger: {
-        name: classNameMock,
-        method_name: 'isString',
-        params: '[null]'
-      }
-    });
+    const decoratedMethod = CatchException(options, logger)(target, propertyKey, descriptor);
+    const result = await decoratedMethod.value.apply(target, args);
+
+    expect(descriptor.value).toEqual(expect.any(Function));
+    expect(result).toBe(returnValue);
+
+    expect(logger.error).not.toBeCalled();
   });
 
-  it('should not log if the method does not throw an exception', () => {
-    new ClassMock().isString('valid param');
+  it('should catch the exception, log it with kind, and call onException if provided', async () => {
+    const args = ['arg1', 'arg2'];
+    const kind = 'test';
+    const onException = jest.fn();
+    descriptor.value.mockRejectedValue(ErrorMock);
 
-    expect(loggerMock.error).not.toBeCalled();
+    options.kind = kind;
+    options.onException = onException;
+
+    const decoratedMethod = CatchException(options, logger)(target, propertyKey, descriptor);
+    await decoratedMethod.value.apply(target, args);
+
+    expect(logger.error).toBeCalled();
+    expect(logger.error).toBeCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: kind,
+        className: target.constructor.name,
+        methodName: propertyKey
+      },
+      ...args
+    );
+    expect(onException).toHaveBeenCalledWith(ErrorMock, target);
+  });
+
+  it('should catch the exception, log it, and call onException if provided', async () => {
+    const args = ['arg1', 'arg2'];
+    const onException = jest.fn();
+    descriptor.value.mockRejectedValue(ErrorMock);
+
+    options.onException = onException;
+
+    const decoratedMethod = CatchException(options, logger)(target, propertyKey, descriptor);
+    await decoratedMethod.value.apply(target, args);
+
+    expect(logger.error).toBeCalled();
+    expect(logger.error).toBeCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: undefined,
+        className: target.constructor.name,
+        methodName: propertyKey
+      },
+      ...args
+    );
+    expect(onException).toHaveBeenCalledWith(ErrorMock, target);
+  });
+
+  it('should catch the exception, log it, and throw it if bubbleException is true', async () => {
+    const args = ['arg1', 'arg2'];
+    descriptor.value.mockRejectedValue(ErrorMock);
+
+    options.bubbleException = true;
+
+    const decoratedMethod = CatchException(options, logger)(target, propertyKey, descriptor);
+
+    await expect(decoratedMethod.value.apply(target, args)).rejects.toThrow(ErrorMock);
+
+    expect(logger.error).toBeCalled();
+    expect(logger.error).toBeCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: undefined,
+        className: target.constructor.name,
+        methodName: propertyKey
+      },
+      ...args
+    );
   });
 });
