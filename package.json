@@ -1,11 +1,46 @@
 {
-  "name": "logr-node",
-  "version": "1.0.0",
-  "main": "lib/index.js",
-  "types": "lib/**/*.d.ts",
+  "name": "@daki/logr",
+  "version": "1.1.0",
+  "main": "index.js",
+  "types": "*/**/*.d.ts",
   "license": "MIT",
+  "homepage": "https://github.com/JOKR-Services/logr-node#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JOKR-Services/logr-node.git"
+  },
+  "keywords": ["log", "logger", "node", "catch", "excpection", "decorator"],
+  "contributors": [
+    {
+      "name": "Giovanna Cunha",
+      "url": "https://github.com/GiovannaK"
+    },
+    {
+      "name": "Elyson Romeiro",
+      "url": "https://github.com/elysonromeiro"
+    },
+    {
+      "name": "Iago Fagundes",
+      "url": "https://github.com/iago-f-s-e"
+    },
+    {
+      "name": "José Bernardo Johann",
+      "url": "https://github.com/josebejohann"
+    }
+  ],
+  "engines": {
+    "node": ">=18.16.0"
+  },
+  "files": [
+    "./lib",
+    "index.js",
+    "index.d.ts"
+  ],
+  "peerDependencies": {
+    "dd-trace": "^4.5.0"
+  },
   "scripts": {
-    "build": "tsc -p tsconfig.prod.json && tsc-alias",
+    "build": "tsc -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.json",
     "run:basic": "ts-node -r tsconfig-paths/register --transpile-only ./src/examples/using-logger-in-a-basic-function.ts",
     "lint": "eslint '*/**/*.{js,ts}'",
     "prepare": "husky install",

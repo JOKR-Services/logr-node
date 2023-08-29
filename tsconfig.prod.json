@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig",
-  "exclude": ["**/*.test.ts", "fixtures", "src/examples", "./node_modules/*"]
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@domain/*": ["lib/domain/*"],
+      "@infra/*": ["lib/infra/*"]
+    }
+  },
+  "exclude": ["**/*.test.ts", "fixtures", "src/lib/examples", "./node_modules/*"]
 }
