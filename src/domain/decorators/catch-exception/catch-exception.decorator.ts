@@ -20,6 +20,13 @@ type Options = {
   kind?: string;
 
   /**
+   * Flag indicating whether the method is synchronous (optional).
+   *
+   * @type {boolean}
+   */
+  isSync?: boolean;
+
+  /**
    * Flag indicating whether the exception should bubble up (optional).
    *
    * @type {boolean}
@@ -54,9 +61,37 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
   ): PropertyDescriptor {
     const method = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    if (!options?.isSync) {
+      descriptor.value = async function (...args: any[]) {
+        try {
+          return await method.apply(this, args);
+        } catch (err) {
+          logger.error(
+            err,
+            {
+              kind: options?.kind || (this as any).__kind,
+              className: target.constructor.name,
+              methodName: propertyKey
+            },
+            ...args
+          );
+
+          if (options?.onException) {
+            return options.onException.call(this, err, this);
+          }
+
+          if (options?.bubbleException) {
+            throw err;
+          }
+        }
+      };
+
+      return descriptor;
+    }
+
+    descriptor.value = function (...args: any[]) {
       try {
-        return await method.apply(this, args);
+        return method.apply(this, args);
       } catch (err) {
         logger.error(
           err,
