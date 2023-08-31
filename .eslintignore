@@ -1,5 +1,7 @@
 node_modules
 fixtures
 lib
+!src/lib
 *.js
 commitlint.config.js
+index.d.ts
