@@ -85,10 +85,7 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
 
           if (options?.bubbleException) {
-            if (options?.customErrorInstance !== undefined) {
-              throw options.customErrorInstance;
-            }
-            throw err;
+            throw options?.customErrorInstance || err;
           }
         }
       };
@@ -112,10 +109,7 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
 
           if (options?.bubbleException) {
-            if (options?.customErrorInstance !== undefined) {
-              throw options.customErrorInstance;
-            }
-            throw err;
+            throw options?.customErrorInstance || err;
           }
         }
       };
