@@ -1,6 +1,6 @@
 {
   "name": "@daki/logr",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "types": "*/**/*.d.ts",
   "license": "MIT",
@@ -9,7 +9,14 @@
     "type": "git",
     "url": "https://github.com/JOKR-Services/logr-node.git"
   },
-  "keywords": ["log", "logger", "node", "catch", "excpection", "decorator"],
+  "keywords": [
+    "log",
+    "logger",
+    "node",
+    "catch",
+    "excpection",
+    "decorator"
+  ],
   "contributors": [
     {
       "name": "Giovanna Cunha",
