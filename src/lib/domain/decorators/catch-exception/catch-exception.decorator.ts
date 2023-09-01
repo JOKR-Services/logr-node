@@ -85,6 +85,9 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
 
           if (options?.bubbleException) {
+            if (options?.customErrorInstance) {
+              throw options.customErrorInstance;
+            }
             throw err;
           }
         }
