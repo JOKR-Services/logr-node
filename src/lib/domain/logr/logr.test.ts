@@ -34,7 +34,8 @@ describe('Logr', () => {
           name: caller.className,
           method_name: caller.methodName,
           params: format(params)
-        }
+        },
+        timestamp: expect.any(String)
       });
 
       expect(loggerMock.error).toBeCalledTimes(1);

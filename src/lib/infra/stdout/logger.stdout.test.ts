@@ -16,6 +16,7 @@ describe('LoggerStdout', () => {
   describe('error', () => {
     it('should write the error message to process.stderr', () => {
       const error: ILoggerErrorPattern = {
+        timestamp: new Date().toISOString(),
         logger: {
           name: 'test',
           params: 'test',

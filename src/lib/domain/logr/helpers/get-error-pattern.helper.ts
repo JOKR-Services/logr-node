@@ -9,6 +9,7 @@ export function getErrorPattern(
   ...params: unknown[]
 ): ILoggerErrorPattern {
   return {
+    timestamp: new Date().toISOString(),
     logger: {
       name: caller.className || DEFAULT_VALUE,
       method_name: caller.methodName || DEFAULT_VALUE,
