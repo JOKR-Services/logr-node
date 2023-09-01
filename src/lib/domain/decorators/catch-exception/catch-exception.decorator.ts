@@ -14,6 +14,8 @@ import { Logr } from '@domain/logr';
  *                                      The context parameter can be of any type.
  */
 type Options = {
+  customErrorInstance?: any;
+
   /**
    * The kind of logging event (e.g., 'Application', 'Domain', 'Infra') (optional).
    *
@@ -107,6 +109,9 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
 
           if (options?.bubbleException) {
+            if (options?.customErrorInstance) {
+              throw options.customErrorInstance;
+            }
             throw err;
           }
         }
