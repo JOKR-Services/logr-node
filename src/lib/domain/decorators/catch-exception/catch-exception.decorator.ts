@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import { ILoggerService } from '@domain/interfaces';
 import { Logr } from '@domain/logr';
 
@@ -85,33 +87,43 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
         }
       };
+    } else {
+      descriptor.value = function (...args: any[]) {
+        try {
+          return method.apply(this, args);
+        } catch (err) {
+          logger.error(
+            err,
+            {
+              kind: options?.kind || (this as any).__kind,
+              className: target.constructor.name,
+              methodName: propertyKey
+            },
+            ...args
+          );
 
-      return descriptor;
+          if (options?.onException) {
+            return options.onException.call(this, err, this);
+          }
+
+          if (options?.bubbleException) {
+            throw err;
+          }
+        }
+      };
     }
 
-    descriptor.value = function (...args: any[]) {
-      try {
-        return method.apply(this, args);
-      } catch (err) {
-        logger.error(
-          err,
-          {
-            kind: options?.kind || (this as any).__kind,
-            className: target.constructor.name,
-            methodName: propertyKey
-          },
-          ...args
-        );
+    const metadataKeys = Reflect.getOwnMetadataKeys(method);
 
-        if (options?.onException) {
-          return options.onException.call(this, err, this);
-        }
+    if (!!metadataKeys?.length) {
+      metadataKeys.forEach(metadataKey => {
+        const metadataValue = Reflect.getOwnMetadata(metadataKey, method);
 
-        if (options?.bubbleException) {
-          throw err;
-        }
-      }
-    };
+        if (!metadataValue) return;
+
+        Reflect.defineMetadata(metadataKey, metadataValue, descriptor.value);
+      });
+    }
 
     return descriptor;
   };
