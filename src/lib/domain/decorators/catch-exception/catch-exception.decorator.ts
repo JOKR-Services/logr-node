@@ -85,7 +85,7 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
 
           if (options?.bubbleException) {
-            if (options?.customErrorInstance) {
+            if (options?.customErrorInstance !== undefined) {
               throw options.customErrorInstance;
             }
             throw err;
@@ -112,7 +112,7 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
 
           if (options?.bubbleException) {
-            if (options?.customErrorInstance) {
+            if (options?.customErrorInstance !== undefined) {
               throw options.customErrorInstance;
             }
             throw err;
