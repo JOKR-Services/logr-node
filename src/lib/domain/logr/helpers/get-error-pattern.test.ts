@@ -1,6 +1,7 @@
 import { getErrorPattern } from './get-error-pattern.helper';
 
 const mockErr = new Error('Mocked');
+const mockTimeStamp = expect.any(String);
 
 describe('getErrorPattern', () => {
   it('should return the correct error pattern when receive a valid payload', () => {
@@ -16,6 +17,7 @@ describe('getErrorPattern', () => {
     );
 
     expect(result).toMatchObject({
+      timestamp: mockTimeStamp,
       logger: {
         name: 'test',
         method_name: 'test',
@@ -42,6 +44,7 @@ describe('getErrorPattern', () => {
     );
 
     expect(result).toMatchObject({
+      timestamp: mockTimeStamp,
       logger: {
         name: 'unknown',
         method_name: 'test',
@@ -68,6 +71,7 @@ describe('getErrorPattern', () => {
     );
 
     expect(result).toMatchObject({
+      timestamp: mockTimeStamp,
       logger: {
         name: 'test',
         method_name: 'test',
@@ -94,6 +98,7 @@ describe('getErrorPattern', () => {
     );
 
     expect(result).toMatchObject({
+      timestamp: mockTimeStamp,
       logger: {
         name: 'test',
         method_name: 'unknown',
@@ -116,6 +121,7 @@ describe('getErrorPattern', () => {
     });
 
     expect(result).toMatchObject({
+      timestamp: mockTimeStamp,
       logger: {
         name: 'test',
         method_name: 'test',
@@ -143,6 +149,7 @@ describe('getErrorPattern', () => {
     );
 
     expect(result).toMatchObject({
+      timestamp: mockTimeStamp,
       logger: {
         name: 'test',
         method_name: 'test',

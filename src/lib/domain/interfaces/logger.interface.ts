@@ -105,6 +105,13 @@ export interface ILoggerTrigger {
  */
 export interface ILoggerErrorPattern {
   /**
+   * The timestamp when the error pattern was generated.
+   *
+   * @type {string}
+   * @remarks This field represents the date and time when the error pattern was created, typically in ISO 8601 format.
+   */
+  timestamp: string;
+  /**
    * The logger trigger associated with the error pattern.
    *
    * @type {ILoggerTrigger}
