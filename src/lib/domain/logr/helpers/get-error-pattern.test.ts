@@ -4,6 +4,8 @@ const mockErr = new Error('Mocked');
 const mockTimeStamp = expect.any(String);
 
 describe('getErrorPattern', () => {
+  it.todo('testar quando for null');
+
   it('should return the correct error pattern when receive a valid payload', () => {
     const result = getErrorPattern(
       mockErr,

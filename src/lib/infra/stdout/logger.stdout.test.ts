@@ -30,11 +30,11 @@ describe('LoggerStdout', () => {
         }
       };
 
-      const writeSpy = jest.spyOn(process.stderr, 'write').mockImplementation();
+      const writeSpy = jest.spyOn(console, 'error').mockImplementation();
 
       logger.error(error);
 
-      expect(writeSpy).toHaveBeenCalledWith(`${JSON.stringify(error, null, 2)}\n`);
+      expect(writeSpy).toHaveBeenCalledWith(`${JSON.stringify(error, null, 2)}`);
       expect(writeSpy).toBeCalledTimes(1);
     });
   });

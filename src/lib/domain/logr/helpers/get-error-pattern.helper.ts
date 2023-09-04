@@ -11,15 +11,15 @@ export function getErrorPattern(
   return {
     timestamp: new Date().toISOString(),
     logger: {
-      name: caller.className || DEFAULT_VALUE,
-      method_name: caller.methodName || DEFAULT_VALUE,
+      name: caller?.className || DEFAULT_VALUE,
+      method_name: caller?.methodName || DEFAULT_VALUE,
       params: formatWithOptions({ depth: 3, numericSeparator: true }, params)
     },
     error: {
-      name: err.name || DEFAULT_VALUE,
-      message: err.message || DEFAULT_VALUE,
-      stack: err.stack || DEFAULT_VALUE,
-      kind: caller.kind || DEFAULT_VALUE
+      name: err?.name || DEFAULT_VALUE,
+      message: err?.message || DEFAULT_VALUE,
+      stack: err?.stack || DEFAULT_VALUE,
+      kind: caller?.kind || DEFAULT_VALUE
     }
   };
 }

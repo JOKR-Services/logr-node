@@ -43,10 +43,13 @@ type Options = {
    * @type {Function}
    * @param {Exception = InstanceType<typeof Error>} exception - The exception object.
    * @param {any} context - The context associated with the exception.
-   * @returns {unknown} - The return value of the callback function.
+   * @returns {unknown | Promise<unknown>} - The return value of the callback function.
    * @template Exception - The generic type of the exception, defaults to 'Error'.
    */
-  onException?<Exception = InstanceType<typeof Error>>(exception: Exception, context: any): unknown;
+  onException?<Exception = InstanceType<typeof Error>>(
+    exception: Exception,
+    context: any
+  ): unknown | Promise<unknown>;
 };
 
 /**
@@ -81,7 +84,7 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           );
 
           if (options?.onException) {
-            return options.onException.call(this, err, this);
+            await options.onException.call(this, err, this);
           }
 
           if (options?.bubbleException) {
@@ -105,7 +108,7 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           );
 
           if (options?.onException) {
-            return options.onException.call(this, err, this);
+            options.onException.call(this, err, this);
           }
 
           if (options?.bubbleException) {
