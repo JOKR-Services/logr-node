@@ -13,6 +13,19 @@ import { Logr } from '@domain/logr';
  *                                      The context parameter can be of any type.
  */
 type Options = {
+  /**
+   * Flag indicating whether the exception should bubble up (optional).
+   *
+   * @type {boolean}
+   */
+  bubbleException?: boolean;
+
+  /**
+   * Custom error instance to be thrown or returned when handling exceptions (optional).
+   * If provided, this error instance will be thrown or returned instead of the original error.
+   *
+   * @type {any}
+   */
   customErrorInstance?: any;
 
   /**
@@ -28,13 +41,6 @@ type Options = {
    * @type {boolean}
    */
   isSync?: boolean;
-
-  /**
-   * Flag indicating whether the exception should bubble up (optional).
-   *
-   * @type {boolean}
-   */
-  bubbleException?: boolean;
 
   /**
    * Callback function for handling exceptions (optional).
