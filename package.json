@@ -46,6 +46,9 @@
   "peerDependencies": {
     "dd-trace": "^4.5.0"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@JOKR-Services"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.json",
     "run:basic": "ts-node -r tsconfig-paths/register --transpile-only ./src/examples/using-logger-in-a-basic-function.ts",
