@@ -1,5 +1,5 @@
 {
-  "name": "logr-node",
+  "name": "@JOKR-Services/logr-node",
   "version": "1.2.2",
   "main": "index.js",
   "types": "*/**/*.d.ts",
