@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
-          scope: '@JOKR-Services'
+          scope: '@jokr-services'
       - run: npm install
       - run: npm run build
       - run: npm publish
