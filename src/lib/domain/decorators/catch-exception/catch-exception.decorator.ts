@@ -1,3 +1,4 @@
+import { persistsMetadata } from '@domain/decorators/helpers';
 import { ILoggerService } from '@domain/interfaces';
 import { Logr } from '@domain/logr';
 
@@ -85,33 +86,33 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           }
         }
       };
+    } else {
+      descriptor.value = function (...args: any[]) {
+        try {
+          return method.apply(this, args);
+        } catch (err) {
+          logger.error(
+            err,
+            {
+              kind: options?.kind || (this as any).__kind,
+              className: target.constructor.name,
+              methodName: propertyKey
+            },
+            ...args
+          );
 
-      return descriptor;
+          if (options?.onException) {
+            return options.onException.call(this, err, this);
+          }
+
+          if (options?.bubbleException) {
+            throw err;
+          }
+        }
+      };
     }
 
-    descriptor.value = function (...args: any[]) {
-      try {
-        return method.apply(this, args);
-      } catch (err) {
-        logger.error(
-          err,
-          {
-            kind: options?.kind || (this as any).__kind,
-            className: target.constructor.name,
-            methodName: propertyKey
-          },
-          ...args
-        );
-
-        if (options?.onException) {
-          return options.onException.call(this, err, this);
-        }
-
-        if (options?.bubbleException) {
-          throw err;
-        }
-      }
-    };
+    persistsMetadata(descriptor.value, method);
 
     return descriptor;
   };
