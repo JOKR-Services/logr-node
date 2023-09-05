@@ -1,17 +1,17 @@
-# `@daki/logr` - A Library for Standardizing Logs
+# `logr-node` - A Library for Standardizing Logs
 
 ## Overview
 
-The `@daki/logr` library is designed to standardize how error logs are captured and recorded in your JavaScript/TypeScript applications. It provides a decorator called `CatchException`, which can be used to wrap methods and capture exceptions, recording them in a predefined format.
+The `logr-node` library is designed to standardize how error logs are captured and recorded in your JavaScript/TypeScript applications. It provides a decorator called `CatchException`, which can be used to wrap methods and capture exceptions, recording them in a predefined format.
 
 ## Installation
 
-To start using `@daki/logr`, you can install it via npm or yarn:
+To start using `logr-node`, you can install it via npm or yarn:
 
 ```bash
-npm install @daki/logr
+npm install logr-node
 # or
-yarn add @daki/logr
+yarn add logr-node
 ```
 
 ## Basic Usage
@@ -19,10 +19,10 @@ yarn add @daki/logr
 Here's an example of basic usage of the `CatchException` decorator:
 
 ```typescript
-import { CatchException } from '@daki/logr';
+import { CatchException } from 'logr-node';
 
 export class MyClass {
-  
+
   @CatchException({
     kind: 'Application',
     isSync: true,
