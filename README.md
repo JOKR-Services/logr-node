@@ -64,7 +64,7 @@ The `CatchException` decorator is used to capture exceptions thrown within a met
 
 - `isSync` (optional): A flag that defines whether the method is synchronous (default is asynchronous).
 
-- `onException` (optional): A callback function to handle captured exceptions. It takes the error and context as parameters and can return an unknown value.
+- `onException` (optional): A callback function to handle captured exceptions. It takes the error and context as parameters.
 
 ## Log Format
 
