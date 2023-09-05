@@ -14,6 +14,21 @@ import { Logr } from '@domain/logr';
  */
 type Options = {
   /**
+   * Flag indicating whether the exception should bubble up (optional).
+   *
+   * @type {boolean}
+   */
+  bubbleException?: boolean;
+
+  /**
+   * Custom error instance to be thrown or returned when handling exceptions (optional).
+   * If provided, this error instance will be thrown or returned instead of the original error.
+   *
+   * @type {any}
+   */
+  customErrorInstance?: any;
+
+  /**
    * The kind of logging event (e.g., 'Application', 'Domain', 'Infra') (optional).
    *
    * @type {string}
@@ -26,13 +41,6 @@ type Options = {
    * @type {boolean}
    */
   isSync?: boolean;
-
-  /**
-   * Flag indicating whether the exception should bubble up (optional).
-   *
-   * @type {boolean}
-   */
-  bubbleException?: boolean;
 
   /**
    * Callback function for handling exceptions (optional).
@@ -66,9 +74,9 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
       descriptor.value = async function (...args: any[]) {
         try {
           return await method.apply(this, args);
-        } catch (err) {
+        } catch (error) {
           logger.error(
-            err,
+            error,
             {
               kind: options?.kind || (this as any).__kind,
               className: target.constructor.name,
@@ -78,11 +86,11 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           );
 
           if (options?.onException) {
-            return options.onException.call(this, err, this);
+            options.onException.call(this, error, this);
           }
 
-          if (options?.bubbleException) {
-            throw err;
+          if (options?.customErrorInstance || options?.bubbleException) {
+            throw options?.customErrorInstance || error;
           }
         }
       };
@@ -102,11 +110,11 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
           );
 
           if (options?.onException) {
-            return options.onException.call(this, err, this);
+            options.onException.call(this, err, this);
           }
 
-          if (options?.bubbleException) {
-            throw err;
+          if (options?.customErrorInstance || options?.bubbleException) {
+            throw options?.customErrorInstance || err;
           }
         }
       };

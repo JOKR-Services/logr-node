@@ -87,7 +87,7 @@ describe('@CatchException', () => {
     expect(onException).toHaveBeenCalledWith(ErrorMock, target);
   });
 
-  it('should catch the exception, log it, and throw it if bubbleException is true', async () => {
+  it('should catch the exception, log it, and rethrow it if bubbleException is true', async () => {
     const args = ['arg1', 'arg2'];
     descriptor.value.mockRejectedValue(ErrorMock);
 
@@ -101,6 +101,30 @@ describe('@CatchException', () => {
     expect(logger.error).toBeCalledTimes(1);
     expect(logger.error).toHaveBeenCalledWith(
       ErrorMock,
+      {
+        kind: undefined,
+        className: target.constructor.name,
+        methodName: propertyKey
+      },
+      ...args
+    );
+  });
+
+  it('should catch the exception, log it, and throw custom error instance if provided', async () => {
+    const args = ['arg1', 'arg2'];
+    const errorMock = new (class CustomErrorInstance extends Error {})();
+    descriptor.value.mockRejectedValue(errorMock as any);
+
+    options.customErrorInstance = errorMock;
+
+    const decorated = CatchException(options, logger)(target, propertyKey, descriptor);
+
+    await expect(decorated.value.apply(target, args)).rejects.toThrow(errorMock);
+
+    expect(logger.error).toBeCalled();
+    expect(logger.error).toBeCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      errorMock,
       {
         kind: undefined,
         className: target.constructor.name,

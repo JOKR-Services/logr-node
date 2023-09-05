@@ -56,13 +56,15 @@ export class MyClass {
 
 The `CatchException` decorator is used to capture exceptions thrown within a method and log them using a logger. Here are the details of the options you can provide to the decorator:
 
+- `bubbleException` (optional): A flag to determine whether the exception should be rethrown after logging (default is not to rethrow).
+
+- `customErrorInstance` (optional): A custom error instance to be thrown or returned when handling exceptions. If provided, this error instance will be thrown or returned instead of the original error.
+
 - `kind` (optional): The type of log event (e.g., 'Application', 'Domain', 'Infra').
 
 - `isSync` (optional): A flag that defines whether the method is synchronous (default is asynchronous).
 
 - `onException` (optional): A callback function to handle captured exceptions. It takes the error and context as parameters and can return an unknown value.
-
-- `bubbleException` (optional): A flag to determine whether the exception should be rethrown after logging (default is not to rethrow).
 
 ## Log Format
 
