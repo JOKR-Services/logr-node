@@ -136,31 +136,34 @@ describe('getErrorPattern', () => {
     });
   });
 
-  it('should sets "unknown" as default value to all error properties if error not contains an exception', () => {
-    const result = getErrorPattern(
-      {},
-      {
-        className: 'test',
-        methodName: 'test',
-        kind: 'Test'
-      },
-      { body: 'test' },
-      'test'
-    );
+  it.each([null, undefined, {}, true, 1, '', []])(
+    'should sets "unknown" as default value to all error properties if error is %s',
+    value => {
+      const result = getErrorPattern(
+        value,
+        {
+          className: 'test',
+          methodName: 'test',
+          kind: 'Test'
+        },
+        { body: 'test' },
+        'test'
+      );
 
-    expect(result).toMatchObject({
-      timestamp: mockTimeStamp,
-      logger: {
-        name: 'test',
-        method_name: 'test',
-        params: "[ { body: 'test' }, 'test' ]"
-      },
-      error: {
-        name: 'unknown',
-        stack: 'unknown',
-        message: 'unknown',
-        kind: 'Test'
-      }
-    });
-  });
+      expect(result).toMatchObject({
+        timestamp: mockTimeStamp,
+        logger: {
+          name: 'test',
+          method_name: 'test',
+          params: "[ { body: 'test' }, 'test' ]"
+        },
+        error: {
+          name: 'unknown',
+          stack: 'unknown',
+          message: 'unknown',
+          kind: 'Test'
+        }
+      });
+    }
+  );
 });

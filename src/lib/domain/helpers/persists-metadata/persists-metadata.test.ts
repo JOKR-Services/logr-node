@@ -1,4 +1,4 @@
-import { persistsMetadata } from '@domain/decorators/helpers/persists-metadata/persists-metadata';
+import { persistsMetadata } from '@domain/helpers';
 
 describe('persistsMetadata', () => {
   it('should copy metadata correctly', () => {
@@ -18,7 +18,7 @@ describe('persistsMetadata', () => {
 
     persistsMetadata(method, originalMethod);
 
-    const metadataValue = Reflect.getOwnMetadata('example-metadata', method);
+    const metadataValue = Reflect.getOwnMetadata('test-metadata-key', method);
     expect(metadataValue).toBeUndefined();
   });
 });

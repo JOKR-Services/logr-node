@@ -1,7 +1,7 @@
 import '@infra/datadog';
 
+import { getErrorPattern } from '@domain/helpers';
 import { ILogger, ILoggerService, LoggerCaller } from '@domain/interfaces';
-import { getErrorPattern } from '@domain/logr/helpers';
 import { LoggerStdout } from '@infra/stdout';
 
 /** @implements {ILoggerService} */
