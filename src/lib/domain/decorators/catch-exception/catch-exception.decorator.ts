@@ -1,4 +1,4 @@
-import { persistsMetadata } from '@domain/decorators/helpers';
+import { persistsMetadata } from '@domain/helpers';
 import { ILoggerService } from '@domain/interfaces';
 import { Logr } from '@domain/logr';
 

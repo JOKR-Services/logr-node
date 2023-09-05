@@ -16,10 +16,10 @@ export function getErrorPattern(
       params: formatWithOptions({ depth: 3, numericSeparator: true }, params)
     },
     error: {
-      name: err.name || DEFAULT_VALUE,
-      message: err.message || DEFAULT_VALUE,
-      stack: err.stack || DEFAULT_VALUE,
-      kind: caller.kind || DEFAULT_VALUE
+      name: err?.name || DEFAULT_VALUE,
+      message: err?.message || DEFAULT_VALUE,
+      stack: err?.stack || DEFAULT_VALUE,
+      kind: caller?.kind || DEFAULT_VALUE
     }
   };
 }
