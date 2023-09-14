@@ -1,6 +1,5 @@
+import { CatchException } from '@domain/decorators';
 import { loggerMock as logger } from '@fixtures/mock/logger.mock';
-
-import { CatchException } from './catch-exception.decorator';
 
 const ErrorMock: any = new Error('Some Error');
 
@@ -85,6 +84,35 @@ describe('@CatchException', () => {
       ...args
     );
     expect(onException).toHaveBeenCalledWith(ErrorMock, target);
+  });
+
+  it('should catch the exception, log it, and call returnOnException if provided', async () => {
+    const args = ['arg1', 'arg2'];
+    const onException = jest.fn();
+    const returnOnException = jest.fn().mockImplementation(() => 'test');
+    descriptor.value.mockRejectedValue(ErrorMock);
+
+    options.returnOnException = returnOnException;
+    options.onException = onException;
+
+    const decoratedMethod = CatchException(options, logger)(target, propertyKey, descriptor);
+    const result = await decoratedMethod.value.apply(target, args);
+
+    expect(logger.error).toBeCalled();
+    expect(logger.error).toBeCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: undefined,
+        className: target.constructor.name,
+        methodName: propertyKey
+      },
+      ...args
+    );
+    expect(onException).not.toBeCalled();
+    expect(returnOnException).toHaveBeenCalledWith(ErrorMock, target);
+    expect(returnOnException).toBeCalledTimes(1);
+    expect(result).toBe('test');
   });
 
   it('should catch the exception, log it, and rethrow it if bubbleException is true', async () => {

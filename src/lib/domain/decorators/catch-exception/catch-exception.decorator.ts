@@ -1,61 +1,7 @@
+import { CatchExceptionOptions } from '@domain/decorators/catch-exception/catch-exception.types';
 import { persistsMetadata } from '@domain/helpers';
 import { ILoggerService } from '@domain/interfaces';
 import { Logr } from '@domain/logr';
-
-/**
- * Represents the options for a logger.
- *
- * @property {string} [kind] - The kind of logging event (e.g., 'Application', 'Domain', 'Infra') (optional).
- * @property {boolean} [bubbleException] - Flag indicating whether the exception should bubble up (optional).
- * @property {Function} [onException] - Callback function for handling exceptions (optional).
- *                                      Receives the exception and the context as parameters and returns an unknown value.
- *                                      The exception parameter has a generic type 'Exception', which defaults to 'Error'.
- *                                      The context parameter can be of any type.
- */
-type Options = {
-  /**
-   * Flag indicating whether the exception should bubble up (optional).
-   *
-   * @type {boolean}
-   */
-  bubbleException?: boolean;
-
-  /**
-   * Custom error instance to be thrown or returned when handling exceptions (optional).
-   * If provided, this error instance will be thrown or returned instead of the original error.
-   *
-   * @type {any}
-   */
-  customErrorInstance?: any;
-
-  /**
-   * The kind of logging event (e.g., 'Application', 'Domain', 'Infra') (optional).
-   *
-   * @type {string}
-   */
-  kind?: string;
-
-  /**
-   * Flag indicating whether the method is synchronous (optional).
-   *
-   * @type {boolean}
-   */
-  isSync?: boolean;
-
-  /**
-   * Callback function for handling exceptions (optional).
-   *
-   * @type {Function}
-   * @param {Exception = InstanceType<typeof Error>} exception - The exception object.
-   * @param {any} context - The context associated with the exception.
-   * @returns {void | Promise<void>} - The return value of the callback function.
-   * @template Exception - The generic type of the exception, defaults to 'Error'.
-   */
-  onException?<Exception = InstanceType<typeof Error>>(
-    exception: Exception,
-    context: any
-  ): void | Promise<void>;
-};
 
 /**
  * Decorator function that catches exceptions and logs them using a logger.
@@ -65,7 +11,10 @@ type Options = {
  *                                    If not provided, a default logger instance will be used.
  * @returns {Function} - The decorated method with exception handling.
  */
-export function CatchException(options?: Options, logger: ILoggerService = new Logr()) {
+export function CatchException(
+  options?: CatchExceptionOptions,
+  logger: ILoggerService = new Logr()
+) {
   return function (
     target: any,
     propertyKey: string,
@@ -77,9 +26,9 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
       descriptor.value = async function (...args: any[]) {
         try {
           return await method.apply(this, args);
-        } catch (error) {
+        } catch (asyncErr) {
           logger.error(
-            error,
+            asyncErr,
             {
               kind: options?.kind || (this as any).__kind,
               className: target.constructor.name,
@@ -88,12 +37,16 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
             ...args
           );
 
+          if (options?.returnOnException) {
+            return await options?.returnOnException.call(this, asyncErr, this);
+          }
+
           if (options?.onException) {
-            await options.onException.call(this, error, this);
+            await options.onException.call(this, asyncErr, this);
           }
 
           if (options?.customErrorInstance || options?.bubbleException) {
-            throw options?.customErrorInstance || error;
+            throw options?.customErrorInstance || asyncErr;
           }
         }
       };
@@ -101,9 +54,9 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
       descriptor.value = function (...args: any[]) {
         try {
           return method.apply(this, args);
-        } catch (err) {
+        } catch (syncErr) {
           logger.error(
-            err,
+            syncErr,
             {
               kind: options?.kind || (this as any).__kind,
               className: target.constructor.name,
@@ -112,12 +65,16 @@ export function CatchException(options?: Options, logger: ILoggerService = new L
             ...args
           );
 
+          if (options?.returnOnException) {
+            return options?.returnOnException.call(this, syncErr, this);
+          }
+
           if (options?.onException) {
-            options.onException.call(this, err, this);
+            options.onException.call(this, syncErr, this);
           }
 
           if (options?.customErrorInstance || options?.bubbleException) {
-            throw options?.customErrorInstance || err;
+            throw options?.customErrorInstance || syncErr;
           }
         }
       };

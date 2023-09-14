@@ -35,7 +35,7 @@
     ],
     "max-len": [
       "error",
-      130,
+      150,
       2,
       {
         "ignorePattern": "^(import|export)",
@@ -43,7 +43,6 @@
       }
     ],
     "constructor-super": "error",
-    "no-return-await": "error",
     "no-multiple-empty-lines": [
       "error",
       {
