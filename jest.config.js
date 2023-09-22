@@ -8,6 +8,7 @@ module.exports = {
   ],
   coverageProvider: "v8",
   moduleNameMapper: {
+    "@core/(.*)": "<rootDir>/src/lib/core/$1",
     "@domain/(.*)": "<rootDir>/src/lib/domain/$1",
     "@infra/(.*)": "<rootDir>/src/lib/infra/$1",
     "@fixtures/?(.*)": "<rootDir>/fixtures/$1"

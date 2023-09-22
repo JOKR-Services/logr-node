@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "strict": true,
+    "strictBindCallApply": true,
+    "alwaysStrict": true,
+    "paths": {
+      "@core/*": ["lib/core/*"],
+      "@domain/*": ["lib/domain/*"],
+      "@infra/*": ["lib/infra/*"]
+    }
+  },
+  "exclude": ["**/*.test.ts", "fixtures", "src/lib/examples", "./node_modules/*"]
+}
