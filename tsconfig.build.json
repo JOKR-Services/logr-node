@@ -7,7 +7,6 @@
     "alwaysStrict": true,
     "paths": {
       "@core/*": ["lib/core/*"],
-      "@domain/*": ["lib/domain/*"],
       "@infra/*": ["lib/infra/*"]
     }
   },
