@@ -1,1 +1,2 @@
-export { CatchException } from '@domain/decorators';
+export type { CatchExceptionOptions } from './lib';
+export { CatchException, catchException, Logr } from './lib';

@@ -1,1 +1,0 @@
-export { Logr } from './logr';

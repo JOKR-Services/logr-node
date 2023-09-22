@@ -35,7 +35,7 @@
     ],
     "max-len": [
       "error",
-      150,
+      200,
       2,
       {
         "ignorePattern": "^(import|export)",

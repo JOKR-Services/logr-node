@@ -1,4 +1,4 @@
-import { ILoggerErrorPattern } from '@domain/interfaces';
+import { ErrorPatternDTO } from '@core/dtos';
 
 import { LoggerStdout } from './logger.stdout';
 
@@ -6,16 +6,18 @@ describe('LoggerStdout', () => {
   let logger: LoggerStdout;
 
   beforeEach(() => {
+    (process.env as any).LOGR_LINE_BREAK = 'false';
     logger = new LoggerStdout();
   });
 
   afterEach(() => {
+    delete (process.env as any).LOGR_LINE_BREAK;
     jest.clearAllMocks();
   });
 
   describe('error', () => {
     it('should write the error message to process.stderr', () => {
-      const error: ILoggerErrorPattern = {
+      const errorPatternDTO: ErrorPatternDTO = {
         timestamp: new Date().toISOString(),
         logger: {
           name: 'test',
@@ -32,9 +34,14 @@ describe('LoggerStdout', () => {
 
       const writeSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      logger.error(error);
+      logger.error(errorPatternDTO);
 
-      expect(writeSpy).toHaveBeenCalledWith(`${JSON.stringify(error)}`);
+      expect(writeSpy).toHaveBeenCalledWith(
+        '\x1b[31m',
+        errorPatternDTO.error.message,
+        JSON.stringify(errorPatternDTO),
+        '\x1b[0m'
+      );
       expect(writeSpy).toBeCalledTimes(1);
     });
   });

@@ -1,114 +1,95 @@
-# `logr-node` - A Library for Standardizing Logs
+# `@jokr-services/logr` - A Library for Standardizing Logs
 
 ## Overview
 
-The `logr-node` library is designed to standardize how error logs are captured and recorded in your JavaScript/TypeScript applications. It provides a decorator called `CatchException`, which can be used to wrap methods and capture exceptions, recording them in a predefined format.
+This TypeScript log standardization library offers an easy and flexible way to standardize your application's logs.
+It offers the ability to customize the logging behavior of exceptions, transactions and validations, allowing you to adapt the library to the specific needs of your project.
 
 ## Installation
 
-To start using `logr-node`, you can install it via npm or yarn:
+To start using `@jokr-services/logr`, you can install it via npm or yarn:
 
 ```bash
-npm install logr-node
+npm install @jokr-services/logr
 # or
-yarn add logr-node
+yarn add @jokr-services/logr
 ```
 
-## Examples
+## Main features
+- Catch Exception
+- Catch Transaction [TODO]
 
-Here's an example of basic usage of the `CatchException` decorator:
+### Catch exception
+We provide two ways to catch exceptions:
+- the `CatchException` decorator to use in your methods
+- the `catchException` function so that you don't have to use classes to use the library
 
+#### Configuration options
+| Option              | Type               | Required/Optional | Default value | Description                                                                                                                                                 | Example using function                                                                                                            | Example using decorator                                                                                                             |
+|---------------------|--------------------|-------------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| bubbleException     | boolean            | Optional          | true          | If set to true, the original exception will be thrown after logging, allowing the exception to continue its propagation.                                    | [Function](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/bubble-exception.function.md)      | [Decorator](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/bubble-exception.decorator.md)      |
+| customErrorInstance | object or function | Optional          | null          | Allows you to specify a custom error instance to be thrown, useful for customizing the exception that is logged.                                            | [Function](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/custom-error-instance.function.md) | [Decorator](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/custom-error-instance.decorator.md) |
+| hideParams          | boolean            | Optional          | false         | If set to true, the parameters that have been passed to the method will not be recorded, keeping sensitive data private.                                    | [Function](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/hide-params.function.md)           | [Decorator](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/hide-params.decorator.md)           |
+| isSync              | boolean            | Optional          | false         | Defines whether the method is synchronous, indicating whether or not it waits for responses from external calls.                                            |                                                                                                                                   |                                                                                                                                     |
+| kind                | string             | Optional          | null          | Defines the type of exception to be logged, allowing exceptions to be categorized into different groups or contexts.                                        |                                                                                                                                   |                                                                                                                                     |
+| onException         | function           | Optional          | null          | It allows you to provide a custom function to handle the registered exception, executing specific actions when an exception occurs.                         | [Function](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/on-exception.function.md)          | [Decorator](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/on-exception.decorator.md)          |
+| pipeParams          | function           | Optional          | null          | It allows you to use a function to process and transform the parameters before they are recorded, adapting them to the desired format.                      | [Function](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/pipe-params.function.md)           | [Decorator](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/pipe-params.decorator.md)           |
+| returnOnException   | function           | Optional          | null          | It offers the ability to provide a custom function to handle the logged exception and return new information or values after the exception has been logged. | [Function](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/return-on-exception.function.md)   | [Decorator](https://github.com/iago-f-s-e/sabbath-logger/blob/main/doc/examples/catch-exception/return-on-exception.function.md)    |
+
+#### Basic usage
+##### Decorator:
 ```typescript
-import { CatchException } from 'logr-node';
+import { CatchException } from '@sabbath/logger';
 
-export class MyClass {
-  private readonly response: Response
-
+export class UserController {
   @CatchException({
     kind: 'Application',
-    isSync: true,
-    onException() {
-      (this as any).rollback('this');
-    }
   })
-  public functionOnException(param1: any, param2: string): void {
-    const error: any = {};
-    console.log(error.someProperty.throwErrorNow);
-  }
-
-  @CatchException({
-    kind: 'Application',
-    onException: (err, ctx) => {
-      ctx.rollback('ctx');
-    }
-  })
-  public arrowOnException(param1: any, param2: string): void {
-    const error: any = {};
-    console.log(error.someProperty.throwErrorNow);
-  }
-
-  @CatchException({
-    kind: 'Application',
-    returnOnException(err) {
-      return (this as any).response.json({error: 500, message: err.message})
-    }
-  })
-  public functionReturnOnException(param1: any, param2: string): void {
-    const error: any = {};
-    console.log(error.someProperty.throwErrorNow);
-  }
-  
-  @CatchException({
-    kind: 'Application',
-    returnOnException: (err, ctx) => {
-      return ctx.response.json({error: 500, message: err.message})
-    }
-  })
-  public arrowReturnOnException(param1: any, param2: string): void {
-    const error: any = {};
-    console.log(error.someProperty.throwErrorNow);
-  }
-
-  public rollback(context: any): void {
-    console.log(`rollback called by: ${context}`);
+  public async getById(id: string) {
+    // Your logic for getting a user
   }
 }
 ```
 
-## Details of the `CatchException` Decorator
+##### Function:
+```typescript
+import { catchException } from '@sabbath/logger';
 
-The `CatchException` decorator is used to capture exceptions thrown within a method and log them using a logger. Here are the details of the options you can provide to the decorator:
+export const getUserById = catchException(async (id: string) => {
+  // Your logic for getting a user
+}, {
+  kind: 'Application',
+});
+```
 
-- `bubbleException` (optional): A flag to determine whether the exception should be rethrown after logging (default is not to rethrow).
+```typescript
+import { catchException, CatchExceptionOptions } from '@sabbath/logger';
 
-- `customErrorInstance` (optional): If provided, this error instance will be thrown or returned instead of the original error.
+const options: CatchExceptionOptions = {
+  kind: 'Application',
+}
 
-- `kind` (optional): The type of log event (e.g., 'Application', 'Domain', 'Infra').
+async function handleGetUserById(id: string) {
+  // Your logic for getting a user
+}
 
-- `isSync` (optional): A flag that defines whether the method is synchronous (default is asynchronous).
+export const getUserById = catchException(handleGetUserById, options);
+```
 
-- `onException` (optional): A callback function to handle captured exceptions. It takes the error and context as parameters.
-
-- `returnOnException` (optional): A callback function to handle captured exceptions. It takes the error and context as parameters and returns an unknown value.
-
-## Log Format
-
-### Error/Exception
-```JSON
-{
-  "timestamp": "TimestampValue",
-  "logger": {
-    "name": "ClassName",
-    "method_name": "MethodName",
-    "params": {
-      // Method parameters
-    }
+#### Log output
+```text
+User is blocked {
+  "timestamp": "2023-09-12T22:45:13.468Z",
+  "trigger": {
+    "name": "UserController",
+    "method": "getById",
+    "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905"],
   },
   "error": {
-    "name": "ErrorName",
-    "message": "ErrorMessage",
-    "stack": "ErrorStackTrace",
-    "kind": "LogEventKind"
+    "name": "UserServiceError",
+    "message": "User is blocked",
+    "stack": {ErrorStack},
+    "kind": "Application"
   }
 }
 ```
