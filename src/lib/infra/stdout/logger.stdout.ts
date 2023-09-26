@@ -5,7 +5,7 @@ import { Logger } from '@core/interfaces';
 
 /** @implements {Logger} */
 export class LoggerStdout implements Logger {
-  private readonly BREAK_LINE = (process.env as any).LOGR_LINE_BREAK.toLowerCase() === 'true';
+  private readonly BREAK_LINE = (process.env as any)?.LOGR_LINE_BREAK?.toLowerCase() === 'true';
   private readonly COLOR_DANGER = '\x1b[31m';
   private readonly COLOR_END = '\x1b[0m';
 
