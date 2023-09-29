@@ -67,4 +67,60 @@ describe('@CatchException', () => {
       methodName: 'methodName'
     });
   });
+
+  it('should catch the exception, register and rethrow the error', async () => {
+    descriptor.value.mockRejectedValue(ErrorMock as any);
+    options.typeErrorHandling = 'REGISTER';
+    const fnDecorated = CatchException(options, loggerMock)(target, propertyKey, descriptor);
+
+    await expect(fnDecorated.value.apply(target, null)).rejects.toThrow(ErrorMock);
+
+    expect(loggerMock.registerError).toBeCalled();
+    expect(loggerMock.registerError).toBeCalledTimes(1);
+    expect(loggerMock.registerError).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: undefined,
+        className: 'Object',
+        methodName: 'methodName'
+      },
+      []
+    );
+  });
+
+  it('should log the registered error and clear the error register if an error is already registered', async () => {
+    loggerMock.registeredError = {
+      isRegistered: true,
+      value: {
+        error: ErrorMock,
+        trigger: {
+          className: 'Object',
+          kind: 'custom',
+          methodName: 'customMethod'
+        },
+        params: ['param1', 'param2']
+      }
+    };
+
+    descriptor.value.mockRejectedValue(new Error('Another error') as any);
+
+    const decorated = CatchException(options, loggerMock)(target, propertyKey, descriptor);
+    await decorated.value.apply(target, null);
+
+    expect(loggerMock.error).toBeCalled();
+    expect(loggerMock.error).toBeCalledTimes(1);
+    expect(loggerMock.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        className: 'Object',
+        kind: 'custom',
+        methodName: 'customMethod'
+      },
+      'param1',
+      'param2'
+    );
+
+    expect(loggerMock.clearErrorRegister).toBeCalled();
+    expect(loggerMock.clearErrorRegister).toBeCalledTimes(1);
+  });
 });

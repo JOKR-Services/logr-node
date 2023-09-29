@@ -1,6 +1,6 @@
 import '@infra/datadog';
 
-import { TriggerInDTO } from '@core/dtos';
+import { RegisteredErrorDTO, TriggerInDTO } from '@core/dtos';
 import { getErrorPattern } from '@core/helpers';
 import { Logger, LoggerService } from '@core/interfaces';
 import { LoggerStdout } from '@infra/stdout';
@@ -8,7 +8,9 @@ import { LoggerStdout } from '@infra/stdout';
 /** @implements {LoggerService} */
 export class Logr implements LoggerService {
   private static instance: LoggerService;
-  private loggerErrParams: any[] = [];
+  private loggerRegisteredError: RegisteredErrorDTO = {
+    isRegistered: false
+  };
 
   private constructor(private readonly logger: Logger) {}
 
@@ -20,17 +22,30 @@ export class Logr implements LoggerService {
     return this.instance;
   }
 
-  public get params(): any[] {
-    return this.loggerErrParams;
+  public get registeredError(): RegisteredErrorDTO {
+    return this.loggerRegisteredError;
   }
 
-  public set params(params: any[]) {
-    this.loggerErrParams = params;
+  public registerError(error: any, trigger: TriggerInDTO, params: any[]): void {
+    if (this.loggerRegisteredError.isRegistered) return;
+
+    this.loggerRegisteredError = {
+      isRegistered: true,
+      value: {
+        error,
+        trigger,
+        params
+      }
+    };
+  }
+
+  public clearErrorRegister(): void {
+    this.loggerRegisteredError = {
+      isRegistered: false
+    };
   }
 
   public error(error: any, trigger: TriggerInDTO, ...params: any[]): void {
-    if (!params.length) return this.logger.error(getErrorPattern(error, trigger, ...this.params));
-
     this.logger.error(getErrorPattern(error, trigger, ...params));
   }
 }

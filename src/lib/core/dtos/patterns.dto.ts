@@ -4,8 +4,8 @@ import { TriggerOutDTO } from '@core/dtos/trigger.dto';
 /**
  * Represents an error pattern for logging.
  *
- * @property {ILoggerTrigger} logger - The logger trigger associated with the error pattern.
- * @property {IErrorInfo} error - The error information related to the pattern.
+ * @property {TriggerOutDTO} logger - The logger trigger associated with the error pattern.
+ * @property {ErrorDTO} error - The error information related to the pattern.
  */
 export type ErrorPatternDTO = {
   /**

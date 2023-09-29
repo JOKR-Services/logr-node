@@ -53,7 +53,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "run:basic": "ts-node -r tsconfig-paths/register --transpile-only ./src/lib/examples/using-logger-in-a-basic-function.ts",
+    "run:example": "ts-node -r tsconfig-paths/register --transpile-only",
     "lint": "eslint '*/**/*.{js,ts}'",
     "prepare": "husky install",
     "prettier": "prettier --write '*/**/*.{js,ts}'",

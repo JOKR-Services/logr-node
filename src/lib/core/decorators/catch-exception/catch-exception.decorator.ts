@@ -23,19 +23,44 @@ export function CatchException(
   ): PropertyDescriptor {
     const method = descriptor.value;
 
-    function setParams(args: any[]): void {
-      logger.params = getLogParams(args, options);
+    function registerError(this: any, error: any, args: any[]): void {
+      const params = getLogParams(args, options);
+      logger.registerError(
+        error,
+        {
+          kind: options?.kind || this.__kind,
+          className: target.constructor.name,
+          methodName: methodName
+        },
+        params
+      );
+    }
+    function logError(this: any, error: any, args: any[]): void {
+      const params = getLogParams(args, options);
+      if (logger.registeredError.isRegistered) {
+        logger.error(
+          logger.registeredError.value.error,
+          logger.registeredError.value.trigger,
+          ...logger.registeredError.value.params
+        );
+
+        logger.clearErrorRegister();
+
+        return;
+      }
+
+      logger.error(
+        error,
+        {
+          kind: options?.kind || this.__kind,
+          className: target.constructor.name,
+          methodName: methodName
+        },
+        ...params
+      );
     }
 
-    function logError(this: any, error: any): void {
-      logger.error(error, {
-        kind: options?.kind || this.__kind,
-        className: target.constructor.name,
-        methodName: methodName
-      });
-    }
-
-    const factory = catchExceptionFactory(method, { logError, setParams }, options);
+    const factory = catchExceptionFactory(method, { logError, registerError }, options);
 
     descriptor.value = options?.isSync ? factory.syncFn : factory.asyncFn;
 

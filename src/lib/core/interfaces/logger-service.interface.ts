@@ -1,4 +1,4 @@
-import { TriggerInDTO } from '@core/dtos';
+import { RegisteredErrorDTO, TriggerInDTO } from '@core/dtos';
 
 /**
  * Represents a logger service.
@@ -6,8 +6,10 @@ import { TriggerInDTO } from '@core/dtos';
  * @property {(error: any, trigger: TriggerInDTO, ...params: any[]) => void} error - Logs an error.
  */
 export interface LoggerService {
-  get params(): any[];
-  set params(params: any[]);
+  get registeredError(): RegisteredErrorDTO;
+
+  registerError(error: any, trigger: TriggerInDTO, params: any[]): void;
+  clearErrorRegister(): void;
 
   /**
    * Logs an error.

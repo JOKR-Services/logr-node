@@ -1,5 +1,5 @@
 import { TriggerInDTO } from '@core/dtos';
-import { Logger, LoggerService as ILoggerService } from '@core/interfaces';
+import { Logger, LoggerService } from '@core/interfaces';
 import { Logr } from '@core/services/logr.service';
 import { ErrorMock } from '@fixtures/mock/error.mock';
 import { errorPatternMock } from '@fixtures/mock/patterns.mock';
@@ -9,27 +9,100 @@ const loggerMock = {
 } as Logger;
 
 describe('LoggerService', () => {
-  let loggerService: ILoggerService;
+  let loggerService: LoggerService;
 
   beforeEach(() => {
     loggerService = Logr.getInstance(loggerMock);
   });
 
   afterEach(() => {
-    loggerService.params = [];
+    loggerService.clearErrorRegister();
     jest.clearAllMocks();
+  });
+
+  describe('LoggerService - registerError', () => {
+    it('should register an error with trigger and params', () => {
+      const trigger = {
+        className: 'TestClass',
+        methodName: 'testMethod',
+        kind: 'error'
+      };
+      const params = ['param1', 'param2'];
+
+      loggerService.registerError(ErrorMock, trigger, params);
+
+      const expectedRegisteredError = {
+        isRegistered: true,
+        value: {
+          error: ErrorMock,
+          trigger,
+          params
+        }
+      };
+
+      expect(loggerService.registeredError).toEqual(expectedRegisteredError);
+    });
+
+    it('should not register an error if already registered', () => {
+      const firstTrigger = {
+        className: 'first-class',
+        methodName: 'first-method',
+        kind: 'first-error'
+      };
+      const firstParams = ['first-params1', 'first-param2'];
+
+      loggerService.registerError(ErrorMock, firstTrigger, firstParams);
+
+      const trigger = {
+        className: 'class',
+        methodName: 'method',
+        kind: 'error'
+      };
+      const params = ['param1', 'param2'];
+      loggerService.registerError(ErrorMock, trigger, params);
+
+      const expectedRegisteredError = {
+        isRegistered: true,
+        value: {
+          error: ErrorMock,
+          trigger: firstTrigger,
+          params: firstParams
+        }
+      };
+
+      expect(loggerService.registeredError).toEqual(expectedRegisteredError);
+    });
+  });
+
+  describe('LoggerService - clearErrorRegister', () => {
+    it('should clear the registered error', () => {
+      const trigger = {
+        className: 'TestClass',
+        methodName: 'testMethod',
+        kind: 'error'
+      };
+      const params = ['param1', 'param2'];
+
+      loggerService.registerError(ErrorMock, trigger, params);
+      loggerService.clearErrorRegister();
+
+      const expectedRegisteredError = {
+        isRegistered: false
+      };
+
+      expect(loggerService.registeredError).toEqual(expectedRegisteredError);
+    });
   });
 
   describe('LoggerService - error', () => {
     it('should call error log with correct error pattern if all data is given', () => {
-      loggerService.params = errorPatternMock.logger.params;
       const trigger = {
         className: errorPatternMock.logger.name,
         methodName: errorPatternMock.logger.method_name,
         kind: errorPatternMock.error.kind
       };
 
-      loggerService.error(ErrorMock, trigger);
+      loggerService.error(ErrorMock, trigger, ...errorPatternMock.logger.params);
 
       const { timestamp: _, ...expected } = errorPatternMock;
 

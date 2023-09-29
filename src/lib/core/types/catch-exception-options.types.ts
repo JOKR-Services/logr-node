@@ -44,4 +44,11 @@ export type CatchExceptionOptions = CommonOptions & {
    * @returns {void | Promise<void>}
    */
   onException?: (exception: any, context?: any, ...params: any[]) => void | Promise<void>;
+
+  /**
+   * @description If set to LOG, the exception will be logged. If set to REGISTER, the exception will be logged in the service to be logged in higher layers. (optional).
+   *
+   * @type {"LOG"|"REGISTER"}
+   */
+  typeErrorHandling?: 'LOG' | 'REGISTER';
 };

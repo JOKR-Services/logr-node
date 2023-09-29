@@ -8,12 +8,14 @@ export function catchExceptionFactory(
 ): Factory {
   return {
     syncFn(...args): any {
-      callbacks.setParams(args);
-
       try {
         return method.apply(this, args);
       } catch (e) {
-        callbacks.logError(e);
+        if (options?.typeErrorHandling === 'REGISTER') {
+          callbacks.registerError(e, args);
+        } else {
+          callbacks.logError(e, args);
+        }
 
         if (options?.returnOnException) {
           return options?.returnOnException.call(this, e, this, ...args);
@@ -31,19 +33,21 @@ export function catchExceptionFactory(
           throw options.customErrorInstance;
         }
 
-        if (options?.bubbleException) {
+        if (options?.bubbleException || options?.typeErrorHandling === 'REGISTER') {
           throw e;
         }
       }
     },
 
     async asyncFn(...args): Promise<any> {
-      callbacks.setParams(args);
-
       try {
         return await method.apply(this, args);
       } catch (e) {
-        callbacks.logError(e);
+        if (options?.typeErrorHandling === 'REGISTER') {
+          callbacks.registerError(e, args);
+        } else {
+          callbacks.logError(e, args);
+        }
 
         if (options?.returnOnException) {
           return options?.returnOnException.call(this, e, this, ...args);
@@ -61,7 +65,7 @@ export function catchExceptionFactory(
           throw options.customErrorInstance;
         }
 
-        if (options?.bubbleException) {
+        if (options?.bubbleException || options?.typeErrorHandling === 'REGISTER') {
           throw e;
         }
       }
