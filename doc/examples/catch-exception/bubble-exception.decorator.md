@@ -30,7 +30,7 @@ class UserController {
 
 ## Usage
 ```typescript
-import { CatchException } from '@sabbath/logger'
+import { CatchException } from '@daki/logr'
 import { Controller, Get, Param } from '@nestjs/common'
 import { UserService } from './user-service'
 import { User } from './user'
@@ -53,14 +53,13 @@ class UserController {
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+User is blocked {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "UserController",
-    "method": "getById"
+    "method_name": "getById",
+    "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905"]
   },
-  "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905"],
   "error": {
     "name": "UserServiceError",
     "message": "User is blocked",

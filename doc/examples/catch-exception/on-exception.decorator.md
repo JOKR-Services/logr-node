@@ -40,7 +40,7 @@ class PaymentController {
 
 ## Usage
 ```typescript
-import { CatchException } from '@sabbath/logger'
+import { CatchException } from '@daki/logr'
 import { Body, Controller, Param, Post } from '@nestjs/common'
 import { PaymentService } from './payment-service'
 import { InventoryService } from './inventory-service'
@@ -77,14 +77,13 @@ class PaymentController {
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+Payment fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "PaymentController",
-    "method": "confirm"
+    "method_name": "confirm",
+    "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905", {"price": 99.99}],
   },
-  "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905", {"price": 99.99}],
   "error": {
     "name": "PaymentError",
     "message": "Payment fails",

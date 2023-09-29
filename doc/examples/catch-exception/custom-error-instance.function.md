@@ -29,7 +29,7 @@ So to maintain the expected behavior, we provide the option to customize the err
 ## Usage
 ```typescript
 import { Request, Response } from 'express'
-import { catchException } from '@sabbath/logger';
+import { catchException } from '@daki/logr';
 import { NotFoundException } from './errors';
 import { userService } from './user-service';
 
@@ -48,7 +48,7 @@ const getUserById = catchException(
 
 ```typescript
 import { Request, Response } from 'express'
-import { catchException, CatchExceptionOptions } from '@sabbath/logger';
+import { catchException, CatchExceptionOptions } from '@daki/logr';
 import { NotFoundException } from './errors';
 import { userService } from './user-service';
 
@@ -67,14 +67,13 @@ const getUserById = catchException(handleGetUserById, options)
 ```
 #### Log output
 ```text
-[ERROR] - {
-  "uid": "",
+User is blocked {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "handleGetUserById",
-    "method": "FUNCTIONAL"
+    "method_name": "FUNCTIONAL",
+    "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905"],
   },
-  "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905"],
   "error": {
     "name": "UserServiceError",
     "message": "User is blocked",

@@ -9,7 +9,7 @@ Suppose you receive information from a user separately and want to return it in 
 
 ## Usage
 ```typescript
-import { catchException } from '@sabbath/logger'
+import { catchException } from '@daki/logr'
 import { userRepository } from './user-repository'
 import { User } from './user'
 import { AddressDTO } from './address'
@@ -40,7 +40,7 @@ const createUserService = catchException(
 ```
 
 ```typescript
-import { catchException, CatchExceptionOptions } from '@sabbath/logger'
+import { catchException, CatchExceptionOptions } from '@daki/logr'
 import { userRepository } from './user-repository'
 import { User } from './user'
 import { AddressDTO } from './address'
@@ -74,25 +74,24 @@ const createUserService = catchException(handleCreateUserService, options)
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+UserService fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "handleCreateUserService",
-    "method": "FUNCTIONAL"
-  },
-  "params": [
-    {
-      "User": {
-        "Name": "John",
-        "Age": 35,
-        "Document": "**********",
-        "Address": {
-          "City": "New York"
+    "method_name": "FUNCTIONAL",
+    "params": [
+      {
+        "User": {
+          "Name": "John",
+          "Age": 35,
+          "Document": "**********",
+          "Address": {
+            "City": "New York"
+          }
         }
       }
-    }
-  ],
+    ],
+  },
   "error": {
     "name": "UserServiceError",
     "message": "UserService fails",
