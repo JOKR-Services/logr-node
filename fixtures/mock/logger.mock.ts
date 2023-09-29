@@ -1,3 +1,6 @@
 export const loggerMock: any = {
-  error: jest.fn()
+  registeredError: {},
+  error: jest.fn(),
+  registerError: jest.fn(),
+  clearErrorRegister: jest.fn()
 };
