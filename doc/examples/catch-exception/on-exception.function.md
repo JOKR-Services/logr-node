@@ -33,7 +33,7 @@ async function confirmPayment(req: Request, res: Response): Promise<void> {
 
 ## Usage
 ```typescript
-import { catchException } from '@sabbath/logger'
+import { catchException } from "@daki/logr"
 import { Request, Response } from 'express'
 import { paymentService } from './payment-service'
 import { inventoryService } from './inventory-service'
@@ -61,7 +61,7 @@ const confirmPayment = catchException(
 ```
 
 ```typescript
-import { catchException, CatchExceptionOptions } from '@sabbath/logger'
+import { catchException, CatchExceptionOptions } from '@daki/logr'
 import { Request, Response } from 'express'
 import { paymentService } from './payment-service'
 import { inventoryService } from './inventory-service'
@@ -90,14 +90,13 @@ const confirmPayment = catchException(handleConfirmPayment, options)
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+Payment fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "handleConfirmPayment",
-    "method": "FUNCTIONAL"
+    "method_name": "FUNCTIONAL",
+    "params": ["c4baf266-13c9-4d6e-93a7-ff8dccde0905", {"price": 99.99}],
   },
-  "params": {PARAMS},
   "error": {
     "name": "PaymentError",
     "message": "Payment fails",

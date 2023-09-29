@@ -45,4 +45,57 @@ describe('catchException', () => {
       kind: undefined
     });
   });
+
+  it('should catch the exception, register and rethrow the error', async () => {
+    fn.mockRejectedValue(ErrorMock as any);
+    options.typeErrorHandling = 'REGISTER';
+
+    const decoratedFn = catchException(fn, options, logger);
+    await expect(decoratedFn()).rejects.toThrow(ErrorMock);
+
+    expect(logger.registerError).toBeCalled();
+    expect(logger.registerError).toBeCalledTimes(1);
+    expect(logger.registerError).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: undefined,
+        className: 'mockConstructor'
+      },
+      []
+    );
+  });
+
+  it('should log the registered error and clear the error register if an error is already registered', async () => {
+    logger.registeredError = {
+      isRegistered: true,
+      value: {
+        error: ErrorMock,
+        trigger: {
+          className: 'mockConstructor',
+          kind: undefined
+        },
+        params: ['param1', 'param2']
+      }
+    };
+
+    fn.mockRejectedValue(ErrorMock as any);
+
+    const decoratedFn = catchException(fn, options, logger);
+    await decoratedFn();
+
+    expect(logger.error).toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalledTimes(1);
+    expect(logger.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        kind: undefined,
+        className: 'mockConstructor'
+      },
+      'param1',
+      'param2'
+    );
+
+    expect(logger.clearErrorRegister).toBeCalled();
+    expect(logger.clearErrorRegister).toBeCalledTimes(1);
+  });
 });

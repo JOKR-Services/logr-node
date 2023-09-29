@@ -38,7 +38,7 @@ class SearchController {
 
 ## Usage
 ```typescript
-import { CatchException } from '@sabbath/logger'
+import { CatchException } from '@daki/logr'
 import { Body, Controller, Get, Query, Param } from '@nestjs/common'
 import { SearchService } from './search-service'
 import { Product } from './products'
@@ -65,19 +65,18 @@ class SearchController {
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+SearchError {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "SearchController",
-    "method": "searchByStoreId"
+    "method_name": "searchByStoreId",
+    "params": [
+      "c4baf266-13c9-4d6e-93a7-ff8dccde0905",
+      {
+        "value": "Smartphone"
+      }
+    ],
   },
-  "params": [
-    "c4baf266-13c9-4d6e-93a7-ff8dccde0905",
-    {
-      "value": "Smartphone"
-    }
-  ],
   "error": {
     "name": "SearchError",
     "message": "Search fails",

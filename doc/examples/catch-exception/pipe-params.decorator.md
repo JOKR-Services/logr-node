@@ -9,7 +9,7 @@ Suppose you receive information from a user separately and want to return it in 
 
 ## Usage
 ```typescript
-import { CatchException } from '@sabbath/logger'
+import { CatchException } from '@daki/logr'
 import { Injectable } from '@nestjs/common'
 import { UserRepository } from './user-repository'
 import { User } from './user'
@@ -44,26 +44,25 @@ class UserService {
 ```
 
 ## Log output
-```text
-[ERROR] - {
-  "uid": "",
+```text 
+UserService fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "UserService",
-    "method": "create"
-  },
-  "params": [
-    {
-      "User": {
-        "Name": "John",
-        "Age": 35,
-        "Document": "**********",
-        "Address": {
-          "City": "New York"
+    "method_name": "create",
+    "params": [
+      {
+        "User": {
+          "Name": "John",
+          "Age": 35,
+          "Document": "**********",
+          "Address": {
+            "City": "New York"
+          }
         }
       }
-    }
-  ],
+    ],
+  },
   "error": {
     "name": "UserServiceError",
     "message": "UserService fails",

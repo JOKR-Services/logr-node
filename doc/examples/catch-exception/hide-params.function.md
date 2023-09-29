@@ -8,7 +8,7 @@ Suppose you have a login method where the data received is sensitive and should 
 ## Usage
 ```typescript
 import { Request, Response } from 'express'
-import { catchException } from '@sabbath/logger';
+import { catchException } from '@daki/logr';
 import { Controller, Post } from '@nestjs/common'
 import { loginService } from './login-service'
 
@@ -28,7 +28,7 @@ const login = catchException(
 
 ```typescript
 import { Request, Response } from 'express'
-import { catchException, CatchExceptionOptions } from '@sabbath/logger';
+import { catchException, CatchExceptionOptions } from '@daki/logr';
 import { Controller, Post } from '@nestjs/common'
 import { loginService } from './login-service'
 
@@ -49,14 +49,13 @@ const login = catchException(handleLogin, options)
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+Login fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "handleLogin",
-    "method": "FUNCTIONAL"
+    "method_name": "FUNCTIONAL",
+    "params": ["WAS HIDDEN"],
   },
-  "params": ["WAS HIDDEN"],
   "error": {
     "name": "LoginError",
     "message": "Login fails",

@@ -7,7 +7,7 @@ Suppose you have a login method where the data received is sensitive and should 
 
 ## Usage
 ```typescript
-import { CatchException } from '@sabbath/logger'
+import { CatchException } from '@daki/logr'
 import { Body, Controller, Post } from '@nestjs/common'
 import { LoginService } from './login-service'
 import { CredentialsDTO } from './credentials'
@@ -31,14 +31,13 @@ class LoginController {
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+Login fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "LoginController",
-    "method": "exec"
+    "method_name": "exec",
+    "params": ["WAS HIDDEN"],
   },
-  "params": ["WAS HIDDEN"],
   "error": {
     "name": "LoginError",
     "message": "Login fails",

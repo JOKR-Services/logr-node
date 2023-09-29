@@ -37,7 +37,7 @@ async function searchByStoreId(req: Request, res: Response): Promise<void> {
 
 ## Usage
 ```typescript
-import { catchException } from '@sabbath/logger'
+import { catchException } from '@daki/logr'
 import { Request, Response } from 'express'
 import { searchService } from './search-service'
 import { loggerService } from './logger-service'
@@ -64,7 +64,7 @@ const searchByStoreId = catchException(
 ```
 
 ```typescript
-import { catchException, CatchExceptionOptions } from '@sabbath/logger'
+import { catchException, CatchExceptionOptions } from '@daki/logr'
 import { Request, Response } from 'express'
 import { searchService } from './search-service'
 import { loggerService } from './logger-service'
@@ -93,19 +93,18 @@ const searchByStoreId = catchException(handleSearchByStoreId,options)
 
 ## Log output
 ```text
-[ERROR] - {
-  "uid": "",
+Search fails {
   "timestamp": "2023-09-12T22:45:13.468Z",
-  "trigger": {
+  "logger": {
     "name": "handleSearchByStoreId",
-    "method": "FUNCTIONAL"
+    "method_name": "FUNCTIONAL",
+    "params": [
+      "c4baf266-13c9-4d6e-93a7-ff8dccde0905",
+      {
+        "value": "Smartphone"
+      }
+    ],
   },
-  "params": [
-    "c4baf266-13c9-4d6e-93a7-ff8dccde0905",
-    {
-      "value": "Smartphone"
-    }
-  ],
   "error": {
     "name": "SearchError",
     "message": "Search fails",
