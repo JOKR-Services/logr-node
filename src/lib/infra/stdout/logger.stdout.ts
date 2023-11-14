@@ -15,12 +15,7 @@ export class LoggerStdout implements Logger {
     return JSON.stringify(data);
   }
 
-  public error(errorPattern: ErrorPatternDTO): void {
-    console.error(
-      this.COLOR_DANGER,
-      errorPattern.error.message,
-      this.stringify(errorPattern),
-      this.COLOR_END
-    );
+  public error(errorPattern: ErrorPatternDTO, errorTitle: string): void {
+    console.error(this.COLOR_DANGER, errorTitle, this.stringify(errorPattern), this.COLOR_END);
   }
 }

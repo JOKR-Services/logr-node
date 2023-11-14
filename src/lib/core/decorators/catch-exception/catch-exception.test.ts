@@ -61,11 +61,15 @@ describe('@CatchException', () => {
 
     expect(loggerMock.error).toBeCalled();
     expect(loggerMock.error).toBeCalledTimes(1);
-    expect(loggerMock.error).toHaveBeenCalledWith(ErrorMock, {
-      className: 'Object',
-      kind: undefined,
-      methodName: 'methodName'
-    });
+    expect(loggerMock.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        className: 'Object',
+        kind: undefined,
+        methodName: 'methodName'
+      },
+      ''
+    );
   });
 
   it('should catch the exception, register and rethrow the error', async () => {
@@ -84,6 +88,7 @@ describe('@CatchException', () => {
         className: 'Object',
         methodName: 'methodName'
       },
+      '',
       []
     );
   });
@@ -116,6 +121,7 @@ describe('@CatchException', () => {
         kind: 'custom',
         methodName: 'customMethod'
       },
+      undefined,
       'param1',
       'param2'
     );

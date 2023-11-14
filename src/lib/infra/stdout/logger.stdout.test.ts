@@ -34,11 +34,11 @@ describe('LoggerStdout', () => {
 
       const writeSpy = jest.spyOn(console, 'error').mockImplementation();
 
-      logger.error(errorPatternDTO);
+      logger.error(errorPatternDTO, '');
 
       expect(writeSpy).toHaveBeenCalledWith(
         '\x1b[31m',
-        errorPatternDTO.error.message,
+        '',
         JSON.stringify(errorPatternDTO),
         '\x1b[0m'
       );

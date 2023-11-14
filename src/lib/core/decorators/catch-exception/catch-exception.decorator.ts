@@ -23,7 +23,7 @@ export function CatchException(
   ): PropertyDescriptor {
     const method = descriptor.value;
 
-    function registerError(this: any, error: any, args: any[]): void {
+    function registerError(this: any, error: any, title: string, args: any[]): void {
       const params = getLogParams(args, options);
       logger.registerError(
         error,
@@ -32,15 +32,17 @@ export function CatchException(
           className: target.constructor.name,
           methodName: methodName
         },
+        title,
         params
       );
     }
-    function logError(this: any, error: any, args: any[]): void {
+    function logError(this: any, error: any, title: string, args: any[]): void {
       const params = getLogParams(args, options);
       if (logger.registeredError.isRegistered) {
         logger.error(
           logger.registeredError.value.error,
           logger.registeredError.value.trigger,
+          logger.registeredError.value.title,
           ...logger.registeredError.value.params
         );
 
@@ -56,6 +58,7 @@ export function CatchException(
           className: target.constructor.name,
           methodName: methodName
         },
+        title,
         ...params
       );
     }

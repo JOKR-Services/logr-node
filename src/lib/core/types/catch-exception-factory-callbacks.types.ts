@@ -1,4 +1,4 @@
 export type CatchExceptionFactoryCallbacks = {
-  logError(error: any, args: any[]): void;
-  registerError(error: any, args: any[]): void;
+  logError(error: any, title: string, args: any[]): void;
+  registerError(error: any, title: string, args: any[]): void;
 };

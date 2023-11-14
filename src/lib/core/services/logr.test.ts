@@ -29,12 +29,13 @@ describe('LoggerService', () => {
       };
       const params = ['param1', 'param2'];
 
-      loggerService.registerError(ErrorMock, trigger, params);
+      loggerService.registerError(ErrorMock, trigger, '', params);
 
       const expectedRegisteredError = {
         isRegistered: true,
         value: {
           error: ErrorMock,
+          title: '',
           trigger,
           params
         }
@@ -51,7 +52,7 @@ describe('LoggerService', () => {
       };
       const firstParams = ['first-params1', 'first-param2'];
 
-      loggerService.registerError(ErrorMock, firstTrigger, firstParams);
+      loggerService.registerError(ErrorMock, firstTrigger, '', firstParams);
 
       const trigger = {
         className: 'class',
@@ -59,12 +60,13 @@ describe('LoggerService', () => {
         kind: 'error'
       };
       const params = ['param1', 'param2'];
-      loggerService.registerError(ErrorMock, trigger, params);
+      loggerService.registerError(ErrorMock, trigger, '', params);
 
       const expectedRegisteredError = {
         isRegistered: true,
         value: {
           error: ErrorMock,
+          title: '',
           trigger: firstTrigger,
           params: firstParams
         }
@@ -83,7 +85,7 @@ describe('LoggerService', () => {
       };
       const params = ['param1', 'param2'];
 
-      loggerService.registerError(ErrorMock, trigger, params);
+      loggerService.registerError(ErrorMock, trigger, '', params);
       loggerService.clearErrorRegister();
 
       const expectedRegisteredError = {
@@ -102,11 +104,17 @@ describe('LoggerService', () => {
         kind: errorPatternMock.error.kind
       };
 
-      loggerService.error(ErrorMock, trigger, ...errorPatternMock.logger.params);
+      loggerService.error(ErrorMock, trigger, 'Test Title', ...errorPatternMock.logger.params);
 
       const { timestamp: _, ...expected } = errorPatternMock;
 
-      expect(loggerMock.error).toBeCalledWith({ ...expected, timestamp: expect.any(String) });
+      expect(loggerMock.error).toBeCalledWith(
+        {
+          ...expected,
+          timestamp: expect.any(String)
+        },
+        'Test Title'
+      );
       expect(loggerMock.error).toBeCalledTimes(1);
     });
 
@@ -117,34 +125,40 @@ describe('LoggerService', () => {
         kind: errorPatternMock.error.kind
       };
 
-      loggerService.error(ErrorMock, trigger, 'foo');
+      loggerService.error(ErrorMock, trigger, 'Title Test', 'foo');
 
       const { timestamp: _, ...expected } = errorPatternMock;
 
-      expect(loggerMock.error).toBeCalledWith({
-        ...expected,
-        logger: { ...expected.logger, params: ['foo'] },
-        timestamp: expect.any(String)
-      });
+      expect(loggerMock.error).toBeCalledWith(
+        {
+          ...expected,
+          logger: { ...expected.logger, params: ['foo'] },
+          timestamp: expect.any(String)
+        },
+        'Title Test'
+      );
       expect(loggerMock.error).toBeCalledTimes(1);
     });
 
     it('should call error log with default value of missing properties', () => {
-      loggerService.error(null, null as unknown as TriggerInDTO);
+      loggerService.error(null, null as unknown as TriggerInDTO, 'Title Test');
 
-      expect(loggerMock.error).toBeCalledWith({
-        timestamp: expect.any(String),
-        logger: {
-          name: 'unknown',
-          params: []
+      expect(loggerMock.error).toBeCalledWith(
+        {
+          timestamp: expect.any(String),
+          logger: {
+            name: 'unknown',
+            params: []
+          },
+          error: {
+            name: 'unknown',
+            kind: 'unknown',
+            message: 'unknown',
+            stack: 'unknown'
+          }
         },
-        error: {
-          name: 'unknown',
-          kind: 'unknown',
-          message: 'unknown',
-          stack: 'unknown'
-        }
-      });
+        'Title Test'
+      );
       expect(loggerMock.error).toBeCalledTimes(1);
     });
   });

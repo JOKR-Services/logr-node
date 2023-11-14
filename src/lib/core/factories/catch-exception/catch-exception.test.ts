@@ -41,7 +41,7 @@ describe('catchExceptionFactory', () => {
     await expect(factory.asyncFn(1, 2, 3)).rejects.toThrow(ErrorMock);
 
     expect(mockCallbacks.logError).toHaveBeenCalledTimes(2);
-    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, [1, 2, 3]);
+    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, '', [1, 2, 3]);
   });
 
   it('should catch the exception and not throw the exception if bubbleException is false ', async () => {
@@ -55,7 +55,7 @@ describe('catchExceptionFactory', () => {
     expect(await factory.asyncFn()).toBeUndefined();
 
     expect(mockCallbacks.logError).toHaveBeenCalledTimes(2);
-    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, []);
+    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, '', []);
   });
 
   it('should catch the exception and call onExcpetion if provided ', async () => {
@@ -73,7 +73,7 @@ describe('catchExceptionFactory', () => {
     await factory.asyncFn();
 
     expect(mockCallbacks.logError).toHaveBeenCalledTimes(2);
-    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, []);
+    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, '', []);
     expect(onExpection).toHaveBeenCalledTimes(2);
   });
 
@@ -94,7 +94,7 @@ describe('catchExceptionFactory', () => {
     expect(syncResult).toBe(ErrorMock.name);
     expect(asyncResult).toBe(ErrorMock.name);
     expect(mockCallbacks.logError).toHaveBeenCalledTimes(2);
-    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, [1, 2, 3]);
+    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, '', [1, 2, 3]);
     expect(returnOnException).toHaveBeenCalledTimes(2);
     expect(returnOnException).toHaveBeenCalledWith(ErrorMock, factory);
     expect(returnOnException).toHaveBeenCalledWith(ErrorMock, factory, 1, 2, 3);
@@ -115,7 +115,7 @@ describe('catchExceptionFactory', () => {
     await expect(factory.asyncFn()).rejects.toThrow(err);
 
     expect(mockCallbacks.logError).toHaveBeenCalledTimes(2);
-    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, []);
+    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, '', []);
   });
 
   it('should catch the exception, and call custom error to throw custom error instance if provided', async () => {
@@ -134,6 +134,6 @@ describe('catchExceptionFactory', () => {
     await expect(factory.asyncFn()).rejects.toThrow(err);
 
     expect(mockCallbacks.logError).toHaveBeenCalledTimes(2);
-    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, []);
+    expect(mockCallbacks.logError).toHaveBeenCalledWith(ErrorMock, '', []);
   });
 });

@@ -19,6 +19,8 @@ export type CatchExceptionOptions = CommonOptions & {
    */
   bubbleException?: boolean;
 
+  errorTitle?: string | ((exception: any, context?: any, ...params: any[]) => string);
+
   /**
    * @description It offers the ability to provide a custom function to handle the logged exception and return new information or values after the exception has been logged. (optional).
    *
