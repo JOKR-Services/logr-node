@@ -8,7 +8,7 @@ import { RegisteredErrorDTO, TriggerInDTO } from '@core/dtos';
 export interface LoggerService {
   get registeredError(): RegisteredErrorDTO;
 
-  registerError(error: any, trigger: TriggerInDTO, params: any[]): void;
+  registerError(error: any, trigger: TriggerInDTO, title: string, params: any[]): void;
   clearErrorRegister(): void;
 
   /**
@@ -19,5 +19,5 @@ export interface LoggerService {
    * @param {any[]} [params] - Additional parameters associated with the error (optional).
    * @returns {void}
    */
-  error(error: any, trigger: TriggerInDTO, ...params: any[]): void;
+  error(error: any, trigger: TriggerInDTO, title: string, ...params: any[]): void;
 }

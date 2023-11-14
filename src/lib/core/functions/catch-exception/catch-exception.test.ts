@@ -40,10 +40,14 @@ describe('catchException', () => {
     await decoratedFn();
 
     expect(logger.error).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledWith(ErrorMock, {
-      className: 'mockConstructor',
-      kind: undefined
-    });
+    expect(logger.error).toHaveBeenCalledWith(
+      ErrorMock,
+      {
+        className: 'mockConstructor',
+        kind: undefined
+      },
+      ''
+    );
   });
 
   it('should catch the exception, register and rethrow the error', async () => {
@@ -61,6 +65,7 @@ describe('catchException', () => {
         kind: undefined,
         className: 'mockConstructor'
       },
+      '',
       []
     );
   });
@@ -91,6 +96,7 @@ describe('catchException', () => {
         kind: undefined,
         className: 'mockConstructor'
       },
+      undefined,
       'param1',
       'param2'
     );

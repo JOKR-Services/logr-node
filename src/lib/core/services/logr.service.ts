@@ -26,7 +26,7 @@ export class Logr implements LoggerService {
     return this.loggerRegisteredError;
   }
 
-  public registerError(error: any, trigger: TriggerInDTO, params: any[]): void {
+  public registerError(error: any, trigger: TriggerInDTO, title: string, params: any[]): void {
     if (this.loggerRegisteredError.isRegistered) return;
 
     this.loggerRegisteredError = {
@@ -34,7 +34,8 @@ export class Logr implements LoggerService {
       value: {
         error,
         trigger,
-        params
+        params,
+        title
       }
     };
   }
@@ -45,7 +46,10 @@ export class Logr implements LoggerService {
     };
   }
 
-  public error(error: any, trigger: TriggerInDTO, ...params: any[]): void {
-    this.logger.error(getErrorPattern(error, trigger, ...params));
+  public error(error: any, trigger: TriggerInDTO, title: string, ...params: any[]): void {
+    const errorPattern = getErrorPattern(error, trigger, ...params);
+    const errorTitle = title.trim().length ? title.trim() : errorPattern.error.message;
+
+    this.logger.error(errorPattern, errorTitle);
   }
 }

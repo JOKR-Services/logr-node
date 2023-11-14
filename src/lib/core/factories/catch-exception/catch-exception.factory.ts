@@ -11,10 +11,19 @@ export function catchExceptionFactory(
       try {
         return method.apply(this, args);
       } catch (e) {
+        let title = '';
+
+        if (options?.errorTitle) {
+          title =
+            typeof options.errorTitle === 'function'
+              ? options.errorTitle.call(this, e, this, ...args)
+              : options.errorTitle;
+        }
+
         if (options?.typeErrorHandling === 'REGISTER') {
-          callbacks.registerError(e, args);
+          callbacks.registerError(e, title, args);
         } else {
-          callbacks.logError(e, args);
+          callbacks.logError(e, title, args);
         }
 
         if (options?.returnOnException) {
@@ -43,10 +52,19 @@ export function catchExceptionFactory(
       try {
         return await method.apply(this, args);
       } catch (e) {
+        let title = '';
+
+        if (options?.errorTitle) {
+          title =
+            typeof options.errorTitle === 'function'
+              ? options.errorTitle.call(this, e, this, ...args)
+              : options.errorTitle;
+        }
+
         if (options?.typeErrorHandling === 'REGISTER') {
-          callbacks.registerError(e, args);
+          callbacks.registerError(e, title, args);
         } else {
-          callbacks.logError(e, args);
+          callbacks.logError(e, title, args);
         }
 
         if (options?.returnOnException) {

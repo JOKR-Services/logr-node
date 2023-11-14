@@ -12,5 +12,5 @@ export interface Logger {
    * @param {ErrorPatternDTO} err - The error pattern to be logged.
    * @returns {void}
    */
-  error(err: ErrorPatternDTO): void;
+  error(err: ErrorPatternDTO, errorTitle: string): void;
 }

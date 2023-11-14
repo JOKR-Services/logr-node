@@ -6,6 +6,7 @@ export type RegisteredErrorDTO =
     }
   | {
       isRegistered: true;
+
       value: {
         /**
          * The catched exception.
@@ -24,5 +25,7 @@ export type RegisteredErrorDTO =
          * @type {any[]}
          */
         params: any[];
+
+        title: string;
       };
     };
