@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { ErrorPatternDTO } from '@core/dtos';
+import { ErrorPatternDTO, LogPatternDTO } from '@core/dtos';
 import { Logger } from '@core/interfaces';
 
 /** @implements {Logger} */
@@ -17,5 +17,13 @@ export class LoggerStdout implements Logger {
 
   public error(errorPattern: ErrorPatternDTO, errorTitle: string): void {
     console.error(this.COLOR_DANGER, errorTitle, this.stringify(errorPattern), this.COLOR_END);
+  }
+
+  public info(dto: LogPatternDTO): void {
+    console.info(this.stringify(dto));
+  }
+
+  public warn(dto: LogPatternDTO): void {
+    console.warn(this.stringify(dto));
   }
 }

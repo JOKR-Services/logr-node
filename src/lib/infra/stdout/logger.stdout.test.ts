@@ -1,4 +1,4 @@
-import { ErrorPatternDTO } from '@core/dtos';
+import { ErrorPatternDTO, LogPatternDTO } from '@core/dtos';
 
 import { LoggerStdout } from './logger.stdout';
 
@@ -42,6 +42,48 @@ describe('LoggerStdout', () => {
         JSON.stringify(errorPatternDTO),
         '\x1b[0m'
       );
+      expect(writeSpy).toBeCalledTimes(1);
+    });
+  });
+
+  describe('info', () => {
+    it('should write the message to process.stderr', () => {
+      const logPatternDTO: LogPatternDTO = {
+        timestamp: new Date().toISOString(),
+        logger: {
+          name: 'test',
+          params: 'test',
+          method_name: 'test'
+        },
+        message: 'some message'
+      };
+
+      const writeSpy = jest.spyOn(console, 'info').mockImplementation();
+
+      logger.info(logPatternDTO);
+
+      expect(writeSpy).toHaveBeenCalledWith(JSON.stringify(logPatternDTO));
+      expect(writeSpy).toBeCalledTimes(1);
+    });
+  });
+
+  describe('warn', () => {
+    it('should write the message to process.stderr', () => {
+      const logPatternDTO: LogPatternDTO = {
+        timestamp: new Date().toISOString(),
+        logger: {
+          name: 'test',
+          params: 'test',
+          method_name: 'test'
+        },
+        message: 'some message'
+      };
+
+      const writeSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      logger.warn(logPatternDTO);
+
+      expect(writeSpy).toHaveBeenCalledWith(JSON.stringify(logPatternDTO));
       expect(writeSpy).toBeCalledTimes(1);
     });
   });
