@@ -165,5 +165,47 @@ describe('LoggerService', () => {
     });
   });
 
-  // TODO: Testes
+  describe('info', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
+
+    it('should call info with correct params', () => {
+      loggerService.info(trigger, 'test message', { a: 1, b: 2 });
+
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        timestamp: expect.any(String),
+        message: 'test message',
+        logger: {
+          name: 'ClassName',
+          method_name: 'Method',
+          params: [{ a: 1, b: 2 }]
+        }
+      });
+    });
+  });
+
+  describe('warn', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
+
+    it('should call warn with correct params', () => {
+      loggerService.warn(trigger, 'test message', { a: 1, b: 2 });
+
+      expect(loggerMock.warn).toHaveBeenCalledWith({
+        timestamp: expect.any(String),
+        message: 'test message',
+        logger: {
+          name: 'ClassName',
+          method_name: 'Method',
+          params: [{ a: 1, b: 2 }]
+        }
+      });
+    });
+  });
 });
