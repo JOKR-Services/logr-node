@@ -55,5 +55,5 @@ export type TriggerInDTO = {
    *
    * @type {string}
    */
-  kind: string;
+  kind?: string;
 };

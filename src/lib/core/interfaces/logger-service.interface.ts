@@ -20,4 +20,22 @@ export interface LoggerService {
    * @returns {void}
    */
   error(error: any, trigger: TriggerInDTO, title: string, ...params: any[]): void;
+
+  /**
+   * Logs an info.
+   *
+   * @param {TriggerInDTO} [trigger] - The caller information for the logging event.
+   * @param {any[]} [params] - Additional parameters associated with the log (optional).
+   * @returns {void}
+   */
+  info(trigger: TriggerInDTO, title: string, ...params: any[]): void;
+
+  /**
+   * Logs a warning.
+   *
+   * @param {TriggerInDTO} [trigger] - The caller information for the logging event.
+   * @param {any[]} [params] - Additional parameters associated with the log (optional).
+   * @returns {void}
+   */
+  warn(trigger: TriggerInDTO, title: string, ...params: any[]): void;
 }

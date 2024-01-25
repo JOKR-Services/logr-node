@@ -5,7 +5,9 @@ import { ErrorMock } from '@fixtures/mock/error.mock';
 import { errorPatternMock } from '@fixtures/mock/patterns.mock';
 
 const loggerMock = {
-  error: jest.fn()
+  error: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn()
 } as Logger;
 
 describe('LoggerService', () => {
@@ -20,7 +22,7 @@ describe('LoggerService', () => {
     jest.clearAllMocks();
   });
 
-  describe('LoggerService - registerError', () => {
+  describe('registerError', () => {
     it('should register an error with trigger and params', () => {
       const trigger = {
         className: 'TestClass',
@@ -76,7 +78,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('LoggerService - clearErrorRegister', () => {
+  describe('clearErrorRegister', () => {
     it('should clear the registered error', () => {
       const trigger = {
         className: 'TestClass',
@@ -96,7 +98,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('LoggerService - error', () => {
+  describe('error', () => {
     it('should call error log with correct error pattern if all data is given', () => {
       const trigger = {
         className: errorPatternMock.logger.name,
@@ -160,6 +162,50 @@ describe('LoggerService', () => {
         'Title Test'
       );
       expect(loggerMock.error).toBeCalledTimes(1);
+    });
+  });
+
+  describe('info', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
+
+    it('should call info with correct params', () => {
+      loggerService.info(trigger, 'test message', { a: 1, b: 2 });
+
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        timestamp: expect.any(String),
+        message: 'test message',
+        logger: {
+          name: 'ClassName',
+          method_name: 'Method',
+          params: [{ a: 1, b: 2 }]
+        }
+      });
+    });
+  });
+
+  describe('warn', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
+
+    it('should call warn with correct params', () => {
+      loggerService.warn(trigger, 'test message', { a: 1, b: 2 });
+
+      expect(loggerMock.warn).toHaveBeenCalledWith({
+        timestamp: expect.any(String),
+        message: 'test message',
+        logger: {
+          name: 'ClassName',
+          method_name: 'Method',
+          params: [{ a: 1, b: 2 }]
+        }
+      });
     });
   });
 });

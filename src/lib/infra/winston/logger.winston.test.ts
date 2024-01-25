@@ -1,17 +1,26 @@
 import { ErrorPatternDTO, LogPatternDTO } from '@core/dtos';
 
-import { LoggerStdout } from './logger.stdout';
+const winstonSpy = { error: jest.fn(), info: jest.fn(), warn: jest.fn() };
+jest.mock('winston', () => {
+  return {
+    createLogger: jest.fn(() => winstonSpy),
+    transports: {
+      Console: jest.fn()
+    },
+    config: { npm: { levels: {} } }
+  };
+});
 
-describe('LoggerStdout', () => {
-  let logger: LoggerStdout;
+import { LoggerWinston } from './logger.winston';
+
+describe('LoggerWinston', () => {
+  let logger: LoggerWinston;
 
   beforeEach(() => {
-    (process.env as any).LOGR_LINE_BREAK = 'false';
-    logger = new LoggerStdout();
+    logger = new LoggerWinston();
   });
 
   afterEach(() => {
-    delete (process.env as any).LOGR_LINE_BREAK;
     jest.clearAllMocks();
   });
 
@@ -32,17 +41,9 @@ describe('LoggerStdout', () => {
         }
       };
 
-      const writeSpy = jest.spyOn(console, 'error').mockImplementation();
-
       logger.error(errorPatternDTO, '');
 
-      expect(writeSpy).toHaveBeenCalledWith(
-        '\x1b[31m',
-        '',
-        JSON.stringify(errorPatternDTO),
-        '\x1b[0m'
-      );
-      expect(writeSpy).toBeCalledTimes(1);
+      expect(winstonSpy.error).toHaveBeenCalledWith('', errorPatternDTO);
     });
   });
 
@@ -58,12 +59,10 @@ describe('LoggerStdout', () => {
         message: 'some message'
       };
 
-      const writeSpy = jest.spyOn(console, 'info').mockImplementation();
-
       logger.info(logPatternDTO);
 
-      expect(writeSpy).toHaveBeenCalledWith(JSON.stringify(logPatternDTO));
-      expect(writeSpy).toBeCalledTimes(1);
+      expect(winstonSpy.info).toHaveBeenCalledWith(logPatternDTO);
+      expect(winstonSpy.info).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -79,12 +78,10 @@ describe('LoggerStdout', () => {
         message: 'some message'
       };
 
-      const writeSpy = jest.spyOn(console, 'warn').mockImplementation();
-
       logger.warn(logPatternDTO);
 
-      expect(writeSpy).toHaveBeenCalledWith(JSON.stringify(logPatternDTO));
-      expect(writeSpy).toBeCalledTimes(1);
+      expect(winstonSpy.warn).toHaveBeenCalledWith(logPatternDTO);
+      expect(winstonSpy.warn).toHaveBeenCalledTimes(1);
     });
   });
 });

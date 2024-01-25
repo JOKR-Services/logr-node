@@ -1,7 +1,7 @@
 import '@infra/datadog';
 
 import { RegisteredErrorDTO, TriggerInDTO } from '@core/dtos';
-import { getErrorPattern } from '@core/helpers';
+import { getErrorPattern, getLogPattern } from '@core/helpers';
 import { Logger, LoggerService } from '@core/interfaces';
 import { LoggerStdout } from '@infra/stdout';
 
@@ -51,5 +51,15 @@ export class Logr implements LoggerService {
     const errorTitle = title.trim().length ? title.trim() : errorPattern.error.message;
 
     this.logger.error(errorPattern, errorTitle);
+  }
+
+  public info(trigger: TriggerInDTO, message: string, ...params: any[]): void {
+    const logPattern = getLogPattern(trigger, message, ...params);
+    this.logger.info(logPattern);
+  }
+
+  public warn(trigger: TriggerInDTO, message: string, ...params: any[]): void {
+    const logPattern = getLogPattern(trigger, message, ...params);
+    this.logger.warn(logPattern);
   }
 }

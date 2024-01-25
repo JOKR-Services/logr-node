@@ -1,9 +1,12 @@
 import { ErrorPatternDTO } from '@core/dtos';
+import { LogPatternDTO } from '@core/dtos/patterns.dto';
 
 /**
  * Represents a logger.
  *
  * @property {(error: ErrorPatternDTO) => void} error - Logs an error.
+ * @property {(dto: LogPatternDTO) => void} info - Logs an info.
+ * @property {(dto: LogPatternDTO) => void} warn - Logs a warning.
  */
 export interface Logger {
   /**
@@ -13,4 +16,20 @@ export interface Logger {
    * @returns {void}
    */
   error(err: ErrorPatternDTO, errorTitle: string): void;
+
+  /**
+   * Logs an info.
+   *
+   * @param {LogPatternDTO} dto - The log pattern to be logged.
+   * @returns {void}
+   */
+  info(dto: LogPatternDTO): void;
+
+  /**
+   * Logs an warn.
+   *
+   * @param {LogPatternDTO} dto - The log pattern to be logged.
+   * @returns {void}
+   */
+  warn(dto: LogPatternDTO): void;
 }
