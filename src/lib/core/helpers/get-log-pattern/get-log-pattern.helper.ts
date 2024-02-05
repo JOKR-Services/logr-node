@@ -13,7 +13,11 @@ export function getLogPattern(
     logger: {
       name: trigger?.className ?? DEFAULT_VALUE,
       method_name: trigger?.methodName ?? DEFAULT_VALUE,
-      params
+      params,
+      trace: {
+        correlation_id: trigger?.correlationId ?? DEFAULT_VALUE,
+        causation_id: trigger?.causationId ?? DEFAULT_VALUE
+      }
     },
     message
   };

@@ -10,15 +10,19 @@ export function getErrorPattern(
   return {
     timestamp: new Date().toISOString(),
     logger: {
-      name: trigger?.className || DEFAULT_VALUE,
+      name: trigger?.className ?? DEFAULT_VALUE,
       method_name: trigger?.methodName,
-      params
+      params,
+      trace: {
+        correlation_id: trigger?.correlationId ?? DEFAULT_VALUE,
+        causation_id: trigger?.causationId ?? DEFAULT_VALUE
+      }
     },
     error: {
-      name: error?.name || DEFAULT_VALUE,
-      message: error?.message || DEFAULT_VALUE,
-      stack: error?.stack || DEFAULT_VALUE,
-      kind: trigger?.kind || DEFAULT_VALUE
+      name: error?.name ?? DEFAULT_VALUE,
+      message: error?.message ?? DEFAULT_VALUE,
+      stack: error?.stack ?? DEFAULT_VALUE,
+      kind: trigger?.kind ?? DEFAULT_VALUE
     }
   };
 }

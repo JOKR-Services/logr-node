@@ -26,6 +26,14 @@ export type TriggerOutDTO = {
    * @type {unknown}
    */
   params: unknown;
+
+  /**
+   * The trace of the trigger
+   *
+   * @property {string} correlation_id
+   * @property {string} causation_id
+   */
+  trace: { correlation_id?: string; causation_id?: string };
 };
 
 /**
@@ -56,4 +64,18 @@ export type TriggerInDTO = {
    * @type {string}
    */
   kind?: string;
+
+  /**
+   * The correlation id of the request.
+   *
+   * @type {string}
+   */
+  correlationId?: string;
+
+  /**
+   * The causation id of the request.
+   *
+   * @type {string}
+   */
+  causationId?: string;
 };

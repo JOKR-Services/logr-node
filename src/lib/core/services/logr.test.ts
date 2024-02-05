@@ -99,13 +99,15 @@ describe('LoggerService', () => {
   });
 
   describe('error', () => {
-    it('should call error log with correct error pattern if all data is given', () => {
-      const trigger = {
-        className: errorPatternMock.logger.name,
-        methodName: errorPatternMock.logger.method_name,
-        kind: errorPatternMock.error.kind
-      };
+    const trigger = {
+      className: errorPatternMock.logger.name,
+      methodName: errorPatternMock.logger.method_name,
+      kind: errorPatternMock.error.kind,
+      correlationId: 'correlation',
+      causationId: 'causation'
+    };
 
+    it('should call error log with correct error pattern if all data is given', () => {
       loggerService.error(ErrorMock, trigger, 'Test Title', ...errorPatternMock.logger.params);
 
       const { timestamp: _, ...expected } = errorPatternMock;
@@ -121,12 +123,6 @@ describe('LoggerService', () => {
     });
 
     it('should call error log with correct error pattern if all data is given with params', () => {
-      const trigger = {
-        className: errorPatternMock.logger.name,
-        methodName: errorPatternMock.logger.method_name,
-        kind: errorPatternMock.error.kind
-      };
-
       loggerService.error(ErrorMock, trigger, 'Title Test', 'foo');
 
       const { timestamp: _, ...expected } = errorPatternMock;
@@ -150,7 +146,11 @@ describe('LoggerService', () => {
           timestamp: expect.any(String),
           logger: {
             name: 'unknown',
-            params: []
+            params: [],
+            trace: {
+              correlation_id: 'unknown',
+              causation_id: 'unknown'
+            }
           },
           error: {
             name: 'unknown',
@@ -169,7 +169,9 @@ describe('LoggerService', () => {
     const trigger: TriggerInDTO = {
       className: 'ClassName',
       methodName: 'Method',
-      kind: 'Application'
+      kind: 'Application',
+      causationId: 'Causation',
+      correlationId: 'Correlation'
     };
 
     it('should call info with correct params', () => {
@@ -181,7 +183,11 @@ describe('LoggerService', () => {
         logger: {
           name: 'ClassName',
           method_name: 'Method',
-          params: [{ a: 1, b: 2 }]
+          params: [{ a: 1, b: 2 }],
+          trace: {
+            correlation_id: 'Correlation',
+            causation_id: 'Causation'
+          }
         }
       });
     });
@@ -191,7 +197,9 @@ describe('LoggerService', () => {
     const trigger: TriggerInDTO = {
       className: 'ClassName',
       methodName: 'Method',
-      kind: 'Application'
+      kind: 'Application',
+      causationId: 'Causation',
+      correlationId: 'Correlation'
     };
 
     it('should call warn with correct params', () => {
@@ -203,7 +211,11 @@ describe('LoggerService', () => {
         logger: {
           name: 'ClassName',
           method_name: 'Method',
-          params: [{ a: 1, b: 2 }]
+          params: [{ a: 1, b: 2 }],
+          trace: {
+            correlation_id: 'Correlation',
+            causation_id: 'Causation'
+          }
         }
       });
     });

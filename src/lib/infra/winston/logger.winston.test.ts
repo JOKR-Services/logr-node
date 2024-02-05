@@ -31,7 +31,11 @@ describe('LoggerWinston', () => {
         logger: {
           name: 'test',
           params: 'test',
-          method_name: 'test'
+          method_name: 'test',
+          trace: {
+            correlation_id: 'test',
+            causation_id: 'test'
+          }
         },
         error: {
           name: 'test',
@@ -54,7 +58,11 @@ describe('LoggerWinston', () => {
         logger: {
           name: 'test',
           params: 'test',
-          method_name: 'test'
+          method_name: 'test',
+          trace: {
+            correlation_id: 'test',
+            causation_id: 'test'
+          }
         },
         message: 'some message'
       };
@@ -73,7 +81,11 @@ describe('LoggerWinston', () => {
         logger: {
           name: 'test',
           params: 'test',
-          method_name: 'test'
+          method_name: 'test',
+          trace: {
+            correlation_id: 'test',
+            causation_id: 'test'
+          }
         },
         message: 'some message'
       };
