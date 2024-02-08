@@ -3,7 +3,7 @@ import '@infra/datadog';
 import { RegisteredErrorDTO, TriggerInDTO } from '@core/dtos';
 import { getErrorPattern, getLogPattern } from '@core/helpers';
 import { Logger, LoggerService } from '@core/interfaces';
-import { LoggerStdout } from '@infra/stdout';
+import { LoggerWinston } from '@infra/winston';
 
 /** @implements {LoggerService} */
 export class Logr implements LoggerService {
@@ -14,7 +14,7 @@ export class Logr implements LoggerService {
 
   private constructor(private readonly logger: Logger) {}
 
-  public static getInstance(logger: Logger = new LoggerStdout()): LoggerService {
+  public static getInstance(logger: Logger = new LoggerWinston()): LoggerService {
     if (!this.instance) {
       this.instance = new Logr(logger);
     }
