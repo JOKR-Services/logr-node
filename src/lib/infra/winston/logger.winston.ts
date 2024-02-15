@@ -6,34 +6,37 @@ import winston from 'winston';
 
 /** @implements {Logger} */
 export class LoggerWinston implements Logger {
-  private winston: winston.Logger;
+  private static _winston?: winston.Logger;
 
-  constructor() {
-    this.winston = winston.createLogger({
-      levels: winston.config.npm.levels,
-      transports: [new winston.transports.Console(this.consoleOptions)],
-      exitOnError: false
-    });
+  private static get winston(): winston.Logger {
+    if (!this._winston) {
+      this._winston = winston.createLogger({
+        levels: winston.config.npm.levels,
+        transports: [new winston.transports.Console(this.consoleOptions)],
+        exitOnError: false
+      });
+    }
+    return this._winston;
   }
 
-  public error(errorPattern: ErrorPatternDTO, errorTitle: string): void {
-    this.winston.error(errorTitle, errorPattern);
-  }
-
-  public info(dto: LogPatternDTO): void {
-    this.winston.info(dto);
-  }
-
-  public warn(dto: LogPatternDTO): void {
-    this.winston.warn(dto);
-  }
-
-  private get consoleOptions() {
+  private static get consoleOptions() {
     return {
       level: 'debug',
       handleExceptions: true,
       json: true,
       colorize: true
     };
+  }
+
+  public error(errorPattern: ErrorPatternDTO, errorTitle: string): void {
+    LoggerWinston.winston.error(errorTitle, errorPattern);
+  }
+
+  public info(dto: LogPatternDTO): void {
+    LoggerWinston.winston.info(dto);
+  }
+
+  public warn(dto: LogPatternDTO): void {
+    LoggerWinston.winston.warn(dto);
   }
 }
