@@ -30,10 +30,11 @@ export type TriggerOutDTO = {
   /**
    * The trace of the trigger
    *
+   * @property {string} id
    * @property {string} correlation_id
    * @property {string} causation_id
    */
-  trace: { correlation_id?: string; causation_id?: string };
+  trace: { id?: string; correlation_id?: string; causation_id?: string };
 };
 
 /**
@@ -49,7 +50,7 @@ export type TriggerInDTO = {
    *
    * @type {string}
    */
-  className: string;
+  className?: string;
 
   /**
    * The name of the method where the logging event occurred.
@@ -64,6 +65,13 @@ export type TriggerInDTO = {
    * @type {string}
    */
   kind?: string;
+
+  /**
+   * The correlation id of the request.
+   *
+   * @type {string}
+   */
+  id?: string;
 
   /**
    * The correlation id of the request.

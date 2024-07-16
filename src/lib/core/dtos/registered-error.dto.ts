@@ -5,7 +5,7 @@ export type RegisteredErrorDTO =
       isRegistered: false;
     }
   | {
-      isRegistered: true;
+      isRegistered?: true;
 
       value: {
         /**

@@ -1,6 +1,7 @@
 import { catchExceptionFactory } from '@core/factories';
 import { getLogParams } from '@core/helpers';
 import { Logr } from '@core/services';
+import { AsyncTraceStorage } from '@core/storages';
 import { CatchExceptionOptions } from '@core/types';
 
 export function catchException<Fn extends (...args: any[]) => any>(
@@ -8,33 +9,23 @@ export function catchException<Fn extends (...args: any[]) => any>(
   options?: CatchExceptionOptions,
   logger = Logr.getInstance()
 ): Fn {
-  function registerError(this: any, error: any, title: string, args: any[]): void {
-    const params = getLogParams(args, options);
-    logger.registerError(
-      error,
-      {
-        kind: options?.kind || this.__kind,
-        className: (fn as any).name || 'Anonymous'
-      },
-      title,
-      params
-    );
-  }
-
   function logError(this: any, error: any, title: string, args: any[]): void {
     const params = getLogParams(args, options);
 
-    if (logger.registeredError.isRegistered) {
-      logger.error(
-        logger.registeredError.value.error,
-        logger.registeredError.value.trigger,
-        logger.registeredError.value.title,
-        ...logger.registeredError.value.params
-      );
+    if (options?.typeErrorHandling === 'REGISTER') {
+      if (!AsyncTraceStorage.outsideAsyncContext) {
+        AsyncTraceStorage.setRegisteredError(
+          error,
+          {
+            kind: options?.kind || this.__kind,
+            className: (fn as any).name || 'Anonymous'
+          },
+          title,
+          ...params
+        );
 
-      logger.clearErrorRegister();
-
-      return;
+        return;
+      }
     }
 
     logger.error(
@@ -46,9 +37,11 @@ export function catchException<Fn extends (...args: any[]) => any>(
       title,
       ...params
     );
+
+    AsyncTraceStorage.clearRegisteredError();
   }
 
-  const factory = catchExceptionFactory(fn, { logError, registerError }, options);
+  const factory = catchExceptionFactory(fn, logError, options);
 
   return options?.isSync ? (factory.syncFn as Fn) : (factory.asyncFn as Fn);
 }
