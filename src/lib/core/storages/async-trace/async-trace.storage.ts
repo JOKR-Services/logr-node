@@ -3,6 +3,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { RegisteredErrorDTO, TriggerInDTO } from '../../dtos';
 
 export type AsyncTrace = {
+  id?: string;
   correlationId?: string;
   causationId?: string;
   registeredError?: RegisteredErrorDTO | undefined;
@@ -11,9 +12,6 @@ export type AsyncTrace = {
 export class AsyncTraceStorage {
   private static instance: AsyncTraceStorage;
   private als: AsyncLocalStorage<AsyncTrace>;
-  private loggerRegisteredError: RegisteredErrorDTO = {
-    isRegistered: false
-  };
 
   private constructor() {
     this.als = new AsyncLocalStorage<AsyncTrace>();
@@ -24,20 +22,6 @@ export class AsyncTraceStorage {
       this.instance = new AsyncTraceStorage();
     }
     return this.instance;
-  }
-
-  public registerError(error: any, trigger: TriggerInDTO, title: string, params: any[]): void {
-    if (this.loggerRegisteredError.isRegistered) return;
-
-    this.loggerRegisteredError = {
-      isRegistered: true,
-      value: {
-        error,
-        trigger,
-        params,
-        title
-      }
-    };
   }
 
   private static getStore: AsyncLocalStorage<AsyncTrace>['getStore'] =
@@ -51,6 +35,15 @@ export class AsyncTraceStorage {
     return this.getStore() === undefined;
   }
 
+  public static get id(): string | undefined {
+    return this.getStore()?.id;
+  }
+  public static set id(value: string | undefined) {
+    const store = this.getStore();
+    if (!!store && !!value) {
+      store.id = value;
+    }
+  }
   public static get correlationId(): string | undefined {
     return this.getStore()?.correlationId;
   }
@@ -73,19 +66,23 @@ export class AsyncTraceStorage {
     }
   }
 
-  public static setRegisteredError(
-    error: any,
-    trigger: TriggerInDTO,
-    title: string,
-    ...params: any[]
-  ): void {
+  public static set registeredError(dto: {
+    error: any;
+    trigger: TriggerInDTO;
+    title: string;
+    params: any[];
+  }) {
     const store = this.getStore();
     if (!store) {
       return;
     }
     if (!store.registeredError) {
-      store.registeredError = { value: { error, trigger, title, params } };
+      store.registeredError = dto;
     }
+  }
+
+  public static get registeredError(): RegisteredErrorDTO | undefined {
+    return this.getStore()?.registeredError;
   }
 
   public static clearRegisteredError(): void {
@@ -93,9 +90,5 @@ export class AsyncTraceStorage {
     if (!!store) {
       delete store.registeredError;
     }
-  }
-
-  public static get registeredError(): RegisteredErrorDTO | undefined {
-    return this.getStore()?.registeredError;
   }
 }

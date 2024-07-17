@@ -10,6 +10,7 @@ module.exports = {
   moduleNameMapper: {
     "@core/(.*)": "<rootDir>/src/lib/core/$1",
     "@infra/(.*)": "<rootDir>/src/lib/infra/$1",
+    "@utils/(.*)": "<rootDir>/src/lib/utils/$1",
     "@fixtures/?(.*)": "<rootDir>/fixtures/$1"
   },
   testMatch: [

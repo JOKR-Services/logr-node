@@ -6,6 +6,7 @@
     "strictBindCallApply": true,
     "alwaysStrict": true,
     "paths": {
+      "@utils/*": ["lib/utils/*"],
       "@core/*": ["lib/core/*"],
       "@infra/*": ["lib/infra/*"]
     }

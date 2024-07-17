@@ -36,6 +36,7 @@ export class Logr implements LoggerService {
       kind: this._trigger.kind,
       methodName: this._trigger.methodName,
       className: this._trigger.className ?? 'MissingClassName',
+      id: AsyncTraceStorage.id,
       causationId: AsyncTraceStorage.causationId,
       correlationId: AsyncTraceStorage.correlationId
     };

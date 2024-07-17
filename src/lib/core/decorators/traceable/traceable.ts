@@ -1,28 +1,24 @@
-// import { AsyncTrace, AsyncTraceStorage } from 'src/core';
-// import { generateUUID } from 'src/utils';
+import { AsyncTrace, AsyncTraceStorage } from '@core/storages';
+import { generateUUID } from '@utils/index';
 
-// export function Traceable(): MethodDecorator {
-//   return function (
-//     target: any,
-//     methodName: string,
-//     descriptor: PropertyDescriptor
-//   ): PropertyDescriptor {
-//     const originalMethod = descriptor.value;
+export function Traceable() {
+  return function (_: any, __: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+    const originalMethod = descriptor.value;
 
-//     descriptor.value = function (...args: any[]) {
-//       if (AsyncTraceStorage.outsideAsyncContext) {
-//         const uuid = generateUUID();
-//         const store: AsyncTrace = {
-//           correlationId: uuid,
-//           causationId: uuid
-//         };
+    descriptor.value = function (...args: any[]) {
+      if (AsyncTraceStorage.outsideAsyncContext) {
+        const uuid = generateUUID();
+        const store: AsyncTrace = {
+          correlationId: uuid,
+          causationId: uuid
+        };
 
-//         return AsyncTraceStorage.run(store, () => originalMethod.apply(this, args));
-//       }
+        return AsyncTraceStorage.run(store, () => originalMethod.apply(this, args));
+      }
 
-//       return originalMethod.apply(this, args);
-//     };
+      return originalMethod.apply(this, args);
+    };
 
-//     return descriptor;
-//   };
-// }
+    return descriptor;
+  };
+}

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@utils/*": ["src/lib/utils/*"],
       "@core/*": ["src/lib/core/*"],
       "@infra/*": ["src/lib/infra/*"],
       "@fixtures/*": ["fixtures/*"]

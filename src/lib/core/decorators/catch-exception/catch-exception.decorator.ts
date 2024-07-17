@@ -33,24 +33,26 @@ export function CatchException(
         methodName: methodName
       };
 
-      if (options?.typeErrorHandling === 'REGISTER') {
-        if (!AsyncTraceStorage.outsideAsyncContext) {
-          AsyncTraceStorage.setRegisteredError(
-            error,
-            {
-              kind: options?.kind || this.__kind,
-              className: target.constructor.name,
-              methodName: methodName
-            },
-            title,
-            ...params
-          );
-
-          return;
-        }
+      if (AsyncTraceStorage.outsideAsyncContext) {
+        logger.error(error, title, ...params);
+        return;
       }
 
-      logger.error(error, title, ...params);
+      if (options?.typeErrorHandling === 'REGISTER') {
+        AsyncTraceStorage.registeredError = { error, trigger: logger.trigger, title, params };
+
+        return;
+      }
+
+      if (AsyncTraceStorage.registeredError) {
+        logger.trigger = AsyncTraceStorage.registeredError.trigger;
+      }
+
+      logger.error(
+        AsyncTraceStorage.registeredError?.error ?? error,
+        AsyncTraceStorage.registeredError?.title ?? title,
+        ...(AsyncTraceStorage.registeredError?.params ?? params)
+      );
 
       AsyncTraceStorage.clearRegisteredError();
     }
