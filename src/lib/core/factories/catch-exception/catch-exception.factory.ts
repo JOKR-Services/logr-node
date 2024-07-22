@@ -35,11 +35,18 @@ export function catchExceptionFactory(
         }
 
         if (!!options?.customErrorInstance) {
+          let newErr: any;
           if (typeof options?.customErrorInstance === 'function') {
-            throw options.customErrorInstance.call(this, e, this, ...args);
+            newErr = options.customErrorInstance.call(this, e, this, ...args);
+          } else {
+            newErr = options.customErrorInstance;
           }
 
-          throw options.customErrorInstance;
+          const stackTraceHead = newErr.stack.split('\n').slice(0, 2).join('\n');
+          const originalStackTrace = (e as any).stack;
+          newErr.stack = stackTraceHead + '\n' + originalStackTrace;
+
+          throw newErr;
         }
 
         if (options?.bubbleException || options?.typeErrorHandling === 'REGISTER') {
@@ -76,11 +83,18 @@ export function catchExceptionFactory(
         }
 
         if (!!options?.customErrorInstance) {
+          let newErr: any;
           if (typeof options?.customErrorInstance === 'function') {
-            throw options.customErrorInstance.call(this, e, this, ...args);
+            newErr = options.customErrorInstance.call(this, e, this, ...args);
+          } else {
+            newErr = options.customErrorInstance;
           }
 
-          throw options.customErrorInstance;
+          const stackTraceHead = newErr.stack.split('\n').slice(0, 2).join('\n');
+          const originalStackTrace = (e as any).stack;
+          newErr.stack = stackTraceHead + '\n' + originalStackTrace;
+
+          throw newErr;
         }
 
         if (options?.bubbleException || options?.typeErrorHandling === 'REGISTER') {
