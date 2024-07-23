@@ -1,223 +1,121 @@
-// import { TriggerInDTO } from '@core/dtos';
-// import { Logger, LoggerService } from '@core/interfaces';
-// import { Logr } from '@core/services/logr.service';
-// import { ErrorMock } from '@fixtures/mock/error.mock';
-// import { errorPatternMock } from '@fixtures/mock/patterns.mock';
+import { TriggerInDTO } from '@core/dtos';
+import { getErrorPattern, getLogPattern } from '@core/helpers';
+import { Logger, LoggerService } from '@core/interfaces';
+import { Logr } from '@core/services/logr.service';
+import { ErrorMock } from '@fixtures/mock/error.mock';
+import { errorPatternMock } from '@fixtures/mock/patterns.mock';
 
-// const loggerMock = {
-//   error: jest.fn(),
-//   info: jest.fn(),
-//   warn: jest.fn()
-// } as Logger;
+const loggerMock = {
+  error: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn()
+} as Logger;
 
-// describe('LoggerService', () => {
-//   let loggerService: LoggerService;
+describe('LoggerService', () => {
+  let loggerService: LoggerService;
 
-//   beforeEach(() => {
-//     loggerService = Logr.getInstance(loggerMock);
-//   });
+  beforeEach(() => {
+    loggerService = new Logr(loggerMock);
+  });
 
-//   afterEach(() => {
-//     loggerService.clearErrorRegister();
-//     jest.clearAllMocks();
-//   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-//   describe('registerError', () => {
-//     it('should register an error with trigger and params', () => {
-//       const trigger = {
-//         className: 'TestClass',
-//         methodName: 'testMethod',
-//         kind: 'error'
-//       };
-//       const params = ['param1', 'param2'];
+  describe('error', () => {
+    const trigger = {
+      className: errorPatternMock.logger.name,
+      methodName: errorPatternMock.logger.method_name,
+      kind: errorPatternMock.error.kind
+    };
 
-//       loggerService.registerError(ErrorMock, trigger, '', params);
+    it('should call error log with correct error pattern if all data is given', () => {
+      loggerService.trigger = trigger;
 
-//       const expectedRegisteredError = {
-//         isRegistered: true,
-//         value: {
-//           error: ErrorMock,
-//           title: '',
-//           trigger,
-//           params
-//         }
-//       };
+      loggerService.error(ErrorMock, 'Test Title', ...errorPatternMock.logger.params);
 
-//       expect(loggerService.registeredError).toEqual(expectedRegisteredError);
-//     });
+      expect(loggerMock.error).toBeCalledWith(
+        {
+          ...getErrorPattern(ErrorMock, trigger, ...errorPatternMock.logger.params),
+          timestamp: expect.any(String)
+        },
+        'Test Title'
+      );
+      expect(loggerMock.error).toBeCalledTimes(1);
+    });
 
-//     it('should not register an error if already registered', () => {
-//       const firstTrigger = {
-//         className: 'first-class',
-//         methodName: 'first-method',
-//         kind: 'first-error'
-//       };
-//       const firstParams = ['first-params1', 'first-param2'];
+    it('should call error log with correct error pattern if all data is given with params', () => {
+      loggerService.trigger = trigger;
 
-//       loggerService.registerError(ErrorMock, firstTrigger, '', firstParams);
+      loggerService.error(ErrorMock, 'Title Test', 'foo');
 
-//       const trigger = {
-//         className: 'class',
-//         methodName: 'method',
-//         kind: 'error'
-//       };
-//       const params = ['param1', 'param2'];
-//       loggerService.registerError(ErrorMock, trigger, '', params);
+      expect(loggerMock.error).toBeCalledWith(
+        {
+          ...getErrorPattern(ErrorMock, trigger, 'foo'),
+          timestamp: expect.any(String)
+        },
+        'Title Test'
+      );
+      expect(loggerMock.error).toBeCalledTimes(1);
+    });
 
-//       const expectedRegisteredError = {
-//         isRegistered: true,
-//         value: {
-//           error: ErrorMock,
-//           title: '',
-//           trigger: firstTrigger,
-//           params: firstParams
-//         }
-//       };
+    it('should call error log with default value of missing properties', () => {
+      loggerService.error(null, 'Title Test');
 
-//       expect(loggerService.registeredError).toEqual(expectedRegisteredError);
-//     });
-//   });
+      expect(loggerMock.error).toBeCalledWith(
+        {
+          ...getErrorPattern(null, loggerService.trigger),
+          timestamp: expect.any(String)
+        },
+        'Title Test'
+      );
+      expect(loggerMock.error).toBeCalledTimes(1);
+    });
+  });
 
-//   describe('clearErrorRegister', () => {
-//     it('should clear the registered error', () => {
-//       const trigger = {
-//         className: 'TestClass',
-//         methodName: 'testMethod',
-//         kind: 'error'
-//       };
-//       const params = ['param1', 'param2'];
+  describe('info', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
 
-//       loggerService.registerError(ErrorMock, trigger, '', params);
-//       loggerService.clearErrorRegister();
+    beforeEach(() => {
+      loggerService.trigger = trigger;
+    });
 
-//       const expectedRegisteredError = {
-//         isRegistered: false
-//       };
+    it('should call info with correct params', () => {
+      loggerService.info('test message', { a: 1, b: 2 });
 
-//       expect(loggerService.registeredError).toEqual(expectedRegisteredError);
-//     });
-//   });
+      const pattern = getLogPattern(trigger, 'test message', { a: 1, b: 2 });
 
-//   describe('error', () => {
-//     const trigger = {
-//       className: errorPatternMock.logger.name,
-//       methodName: errorPatternMock.logger.method_name,
-//       kind: errorPatternMock.error.kind,
-//       correlationId: 'correlation',
-//       causationId: 'causation'
-//     };
+      expect(loggerMock.info).toHaveBeenCalledWith({
+        ...pattern,
+        timestamp: expect.any(String)
+      });
+    });
+  });
 
-//     it('should call error log with correct error pattern if all data is given', () => {
-//       loggerService.error(ErrorMock, trigger, 'Test Title', ...errorPatternMock.logger.params);
+  describe('warn', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
 
-//       const { timestamp: _, ...expected } = errorPatternMock;
+    beforeEach(() => {
+      loggerService.trigger = trigger;
+    });
 
-//       expect(loggerMock.error).toBeCalledWith(
-//         {
-//           ...expected,
-//           timestamp: expect.any(String)
-//         },
-//         'Test Title'
-//       );
-//       expect(loggerMock.error).toBeCalledTimes(1);
-//     });
+    it('should call warn with correct params', () => {
+      loggerService.warn('test message', { a: 1, b: 2 });
 
-//     it('should call error log with correct error pattern if all data is given with params', () => {
-//       loggerService.error(ErrorMock, trigger, 'Title Test', 'foo');
+      const pattern = getLogPattern(trigger, 'test message', { a: 1, b: 2 });
 
-//       const { timestamp: _, ...expected } = errorPatternMock;
-
-//       expect(loggerMock.error).toBeCalledWith(
-//         {
-//           ...expected,
-//           logger: { ...expected.logger, params: ['foo'] },
-//           timestamp: expect.any(String)
-//         },
-//         'Title Test'
-//       );
-//       expect(loggerMock.error).toBeCalledTimes(1);
-//     });
-
-//     it('should call error log with default value of missing properties', () => {
-//       loggerService.error(null, null as unknown as TriggerInDTO, 'Title Test');
-
-//       expect(loggerMock.error).toBeCalledWith(
-//         {
-//           timestamp: expect.any(String),
-//           logger: {
-//             name: 'unknown',
-//             params: [],
-//             trace: {
-//               correlation_id: 'unknown',
-//               causation_id: 'unknown'
-//             }
-//           },
-//           error: {
-//             name: 'unknown',
-//             kind: 'unknown',
-//             message: 'unknown',
-//             stack: 'unknown'
-//           }
-//         },
-//         'Title Test'
-//       );
-//       expect(loggerMock.error).toBeCalledTimes(1);
-//     });
-//   });
-
-//   describe('info', () => {
-//     const trigger: TriggerInDTO = {
-//       className: 'ClassName',
-//       methodName: 'Method',
-//       kind: 'Application',
-//       causationId: 'Causation',
-//       correlationId: 'Correlation'
-//     };
-
-//     it('should call info with correct params', () => {
-//       loggerService.info(trigger, 'test message', { a: 1, b: 2 });
-
-//       expect(loggerMock.info).toHaveBeenCalledWith({
-//         timestamp: expect.any(String),
-//         message: 'test message',
-//         logger: {
-//           name: 'ClassName',
-//           method_name: 'Method',
-//           params: [{ a: 1, b: 2 }],
-//           trace: {
-//             correlation_id: 'Correlation',
-//             causation_id: 'Causation'
-//           }
-//         }
-//       });
-//     });
-//   });
-
-//   describe('warn', () => {
-//     const trigger: TriggerInDTO = {
-//       className: 'ClassName',
-//       methodName: 'Method',
-//       kind: 'Application',
-//       causationId: 'Causation',
-//       correlationId: 'Correlation'
-//     };
-
-//     it('should call warn with correct params', () => {
-//       loggerService.warn(trigger, 'test message', { a: 1, b: 2 });
-
-//       expect(loggerMock.warn).toHaveBeenCalledWith({
-//         timestamp: expect.any(String),
-//         message: 'test message',
-//         logger: {
-//           name: 'ClassName',
-//           method_name: 'Method',
-//           params: [{ a: 1, b: 2 }],
-//           trace: {
-//             correlation_id: 'Correlation',
-//             causation_id: 'Causation'
-//           }
-//         }
-//       });
-//     });
-//   });
-// });
+      expect(loggerMock.warn).toHaveBeenCalledWith({
+        ...pattern,
+        timestamp: expect.any(String)
+      });
+    });
+  });
+});

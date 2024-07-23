@@ -1,4 +1,6 @@
+import { RegisteredErrorDTO } from '@core/dtos';
 import { catchException } from '@core/functions';
+import { AsyncTraceStorage } from '@core/storages';
 import { CatchExceptionOptions } from '@core/types';
 import { ErrorMock } from '@fixtures/mock/error.mock';
 import { loggerMock } from '@fixtures/mock/logger.mock';
@@ -40,68 +42,71 @@ describe('catchException', () => {
     await decoratedFn();
 
     expect(logger.error).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledWith(
-      ErrorMock,
-      {
-        className: 'mockConstructor',
-        kind: undefined
-      },
-      ''
-    );
+    expect(logger.error).toHaveBeenCalledWith(ErrorMock, '');
   });
 
   it('should catch the exception, register and rethrow the error', async () => {
     fn.mockRejectedValue(ErrorMock as any);
     options.typeErrorHandling = 'REGISTER';
 
-    const decoratedFn = catchException(fn, options, logger);
-    await expect(decoratedFn()).rejects.toThrow(ErrorMock);
+    const spy = jest.spyOn(AsyncTraceStorage, 'registeredError', 'set');
 
-    expect(logger.registerError).toBeCalled();
-    expect(logger.registerError).toBeCalledTimes(1);
-    expect(logger.registerError).toHaveBeenCalledWith(
-      ErrorMock,
-      {
-        kind: undefined,
-        className: 'mockConstructor'
-      },
-      '',
-      []
-    );
+    const registeredErrorPayload: RegisteredErrorDTO = {
+      error: ErrorMock,
+      title: '',
+      params: [],
+      trigger: { className: 'mockConstructor', kind: undefined }
+    };
+
+    await AsyncTraceStorage.run({}, () => {
+      const decoratedFn = catchException(fn, options, logger);
+      return expect(decoratedFn())
+        .rejects.toThrow(ErrorMock)
+        .then(() => {
+          expect(AsyncTraceStorage.registeredError).toEqual(registeredErrorPayload);
+        });
+    });
+
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(registeredErrorPayload);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('should log the registered error and clear the error register if an error is already registered', async () => {
-    logger.registeredError = {
-      isRegistered: true,
-      value: {
-        error: ErrorMock,
-        trigger: {
-          className: 'mockConstructor',
-          kind: undefined
-        },
-        params: ['param1', 'param2']
+    const spy = jest.spyOn(AsyncTraceStorage, 'clearRegisteredError');
+
+    await AsyncTraceStorage.run(
+      {
+        registeredError: {
+          error: ErrorMock,
+          title: 'some title',
+          trigger: {
+            className: 'mockConstructor',
+            kind: undefined
+          },
+          params: ['param1', 'param2']
+        }
+      },
+      () => {
+        fn.mockRejectedValue(ErrorMock as any);
+
+        const decoratedFn = catchException(fn, options, logger);
+
+        return decoratedFn();
       }
-    };
-
-    fn.mockRejectedValue(ErrorMock as any);
-
-    const decoratedFn = catchException(fn, options, logger);
-    await decoratedFn();
+    );
 
     expect(logger.error).toHaveBeenCalled();
     expect(logger.error).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledWith(
-      ErrorMock,
-      {
-        kind: undefined,
-        className: 'mockConstructor'
-      },
-      undefined,
-      'param1',
-      'param2'
-    );
+    expect(logger.error).toHaveBeenCalledWith(ErrorMock, 'some title', 'param1', 'param2');
+    expect(logger.trigger).toEqual({
+      className: 'mockConstructor',
+      kind: undefined
+    });
 
-    expect(logger.clearErrorRegister).toBeCalled();
-    expect(logger.clearErrorRegister).toBeCalledTimes(1);
+    expect(spy).toBeCalled();
+    expect(spy).toBeCalledTimes(1);
   });
+
+  // TODO: test what happens outside async context =)
 });

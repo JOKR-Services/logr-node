@@ -28,7 +28,7 @@ export function CatchException(
       const params = getLogParams(args, options);
 
       logger.trigger = {
-        kind: options?.kind || this.__kind,
+        kind: options?.kind || this?.__kind,
         className: target.constructor.name,
         methodName: methodName
       };

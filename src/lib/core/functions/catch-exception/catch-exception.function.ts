@@ -13,7 +13,7 @@ export function catchException<Fn extends (...args: any[]) => any>(
     const params = getLogParams(args, options);
 
     logger.trigger = {
-      kind: options?.kind || this.__kind,
+      kind: options?.kind || this?.__kind,
       className: (fn as any).name || 'Anonymous'
     };
 
