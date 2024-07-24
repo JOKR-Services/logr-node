@@ -1,9 +1,9 @@
 import { Factory } from '@core/interfaces';
-import { CatchExceptionFactoryCallbacks, CatchExceptionOptions } from '@core/types';
+import { CatchExceptionOptions } from '@core/types';
 
 export function catchExceptionFactory(
   method: any,
-  callbacks: CatchExceptionFactoryCallbacks,
+  logError: (error: any, title: string, args: any[]) => void,
   options?: CatchExceptionOptions
 ): Factory {
   return {
@@ -20,11 +20,7 @@ export function catchExceptionFactory(
               : options.errorTitle;
         }
 
-        if (options?.typeErrorHandling === 'REGISTER') {
-          callbacks.registerError(e, title, args);
-        } else {
-          callbacks.logError(e, title, args);
-        }
+        logError(e, title, args);
 
         if (options?.returnOnException) {
           return options?.returnOnException.call(this, e, this, ...args);
@@ -68,11 +64,7 @@ export function catchExceptionFactory(
               : options.errorTitle;
         }
 
-        if (options?.typeErrorHandling === 'REGISTER') {
-          callbacks.registerError(e, title, args);
-        } else {
-          callbacks.logError(e, title, args);
-        }
+        logError(e, title, args);
 
         if (options?.returnOnException) {
           return options?.returnOnException.call(this, e, this, ...args);

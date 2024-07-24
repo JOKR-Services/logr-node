@@ -2,6 +2,7 @@ import { catchExceptionFactory } from '@core/factories';
 import { getLogParams, persistsMetadata } from '@core/helpers';
 import { LoggerService } from '@core/interfaces';
 import { Logr } from '@core/services';
+import { AsyncTraceStorage } from '@core/storages';
 import { CatchExceptionOptions } from '@core/types';
 
 /**
@@ -14,7 +15,7 @@ import { CatchExceptionOptions } from '@core/types';
  */
 export function CatchException(
   options?: CatchExceptionOptions,
-  logger: LoggerService = Logr.getInstance()
+  logger: LoggerService = new Logr()
 ) {
   return function (
     target: any,
@@ -23,47 +24,40 @@ export function CatchException(
   ): PropertyDescriptor {
     const method = descriptor.value;
 
-    function registerError(this: any, error: any, title: string, args: any[]): void {
-      const params = getLogParams(args, options);
-      logger.registerError(
-        error,
-        {
-          kind: options?.kind || this.__kind,
-          className: target.constructor.name,
-          methodName: methodName
-        },
-        title,
-        params
-      );
-    }
     function logError(this: any, error: any, title: string, args: any[]): void {
       const params = getLogParams(args, options);
-      if (logger.registeredError.isRegistered) {
-        logger.error(
-          logger.registeredError.value.error,
-          logger.registeredError.value.trigger,
-          logger.registeredError.value.title,
-          ...logger.registeredError.value.params
-        );
 
-        logger.clearErrorRegister();
+      logger.trigger = {
+        kind: options?.kind || this?.__kind,
+        className: target.constructor.name,
+        methodName: methodName
+      };
+
+      if (AsyncTraceStorage.outsideAsyncContext) {
+        logger.error(error, title, ...params);
+        return;
+      }
+
+      if (options?.typeErrorHandling === 'REGISTER') {
+        AsyncTraceStorage.registeredError = { error, trigger: logger.trigger, title, params };
 
         return;
       }
 
+      if (AsyncTraceStorage.registeredError) {
+        logger.trigger = AsyncTraceStorage.registeredError.trigger;
+      }
+
       logger.error(
-        error,
-        {
-          kind: options?.kind || this.__kind,
-          className: target.constructor.name,
-          methodName: methodName
-        },
-        title,
-        ...params
+        AsyncTraceStorage.registeredError?.error ?? error,
+        AsyncTraceStorage.registeredError?.title ?? title,
+        ...(AsyncTraceStorage.registeredError?.params ?? params)
       );
+
+      AsyncTraceStorage.clearRegisteredError();
     }
 
-    const factory = catchExceptionFactory(method, { logError, registerError }, options);
+    const factory = catchExceptionFactory(method, logError, options);
 
     descriptor.value = options?.isSync ? factory.syncFn : factory.asyncFn;
 
