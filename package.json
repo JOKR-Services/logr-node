@@ -1,6 +1,6 @@
 {
   "name": "@jokr-services/logr",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "main": "index.js",
   "types": "*/**/*.d.ts",
   "license": "MIT",
