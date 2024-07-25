@@ -1,13 +1,7 @@
+import { AsyncTrace } from '@core/types';
 import { AsyncLocalStorage } from 'async_hooks';
 
 import { RegisteredErrorDTO, TriggerInDTO } from '../../dtos';
-
-export type AsyncTrace = {
-  id?: string;
-  correlationId?: string;
-  causationId?: string;
-  registeredError?: RegisteredErrorDTO | undefined;
-};
 
 export class AsyncTraceStorage {
   private static instance: AsyncTraceStorage;

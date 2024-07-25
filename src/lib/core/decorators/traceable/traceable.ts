@@ -1,4 +1,5 @@
-import { AsyncTrace, AsyncTraceStorage } from '@core/storages';
+import { AsyncTraceStorage } from '@core/storages';
+import { AsyncTrace } from '@core/types';
 import { generateUUID } from '@utils/index';
 
 export function Traceable() {
