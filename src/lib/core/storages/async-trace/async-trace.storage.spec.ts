@@ -1,4 +1,6 @@
-import { AsyncTrace, AsyncTraceStorage } from './async-trace.storage';
+import { AsyncTrace } from '@core/types';
+
+import { AsyncTraceStorage } from './async-trace.storage';
 
 describe('AsyncTraceStorage', () => {
   const args: AsyncTrace = { correlationId: 'a', causationId: 'b' };
