@@ -5,3 +5,4 @@ export { AsyncTraceStorage } from '@core/storages';
 export type { AsyncTrace, CatchExceptionOptions } from '@core/types';
 export { LoggerStdout } from '@infra/stdout';
 export { LoggerWinston } from '@infra/winston';
+export { generateUUID } from '@utils/index';
