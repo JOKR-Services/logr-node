@@ -8,7 +8,8 @@ import { errorPatternMock } from '@fixtures/mock/patterns.mock';
 const loggerMock = {
   error: jest.fn(),
   info: jest.fn(),
-  warn: jest.fn()
+  warn: jest.fn(),
+  debug: jest.fn()
 } as Logger;
 
 describe('LoggerService', () => {
@@ -113,6 +114,29 @@ describe('LoggerService', () => {
       const pattern = getLogPattern(trigger, 'test message', { a: 1, b: 2 });
 
       expect(loggerMock.warn).toHaveBeenCalledWith({
+        ...pattern,
+        timestamp: expect.any(String)
+      });
+    });
+  });
+
+  describe('debug', () => {
+    const trigger: TriggerInDTO = {
+      className: 'ClassName',
+      methodName: 'Method',
+      kind: 'Application'
+    };
+
+    beforeEach(() => {
+      loggerService.trigger = trigger;
+    });
+
+    it('should call debug with correct params', () => {
+      loggerService.debug('test message', { a: 1, b: 2 });
+
+      const pattern = getLogPattern(trigger, 'test message', { a: 1, b: 2 });
+
+      expect(loggerMock.debug).toHaveBeenCalledWith({
         ...pattern,
         timestamp: expect.any(String)
       });

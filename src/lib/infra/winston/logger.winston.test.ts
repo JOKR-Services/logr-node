@@ -1,6 +1,6 @@
 import { ErrorPatternDTO, LogPatternDTO } from '@core/dtos';
 
-const winstonSpy = { error: jest.fn(), info: jest.fn(), warn: jest.fn() };
+const winstonSpy = { error: jest.fn(), info: jest.fn(), warn: jest.fn(), debug: jest.fn() };
 jest.mock('winston', () => {
   return {
     createLogger: jest.fn(() => winstonSpy),
@@ -94,6 +94,29 @@ describe('LoggerWinston', () => {
 
       expect(winstonSpy.warn).toHaveBeenCalledWith(logPatternDTO);
       expect(winstonSpy.warn).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('debug', () => {
+    it('should write the message to process.stderr', () => {
+      const logPatternDTO: LogPatternDTO = {
+        timestamp: new Date().toISOString(),
+        logger: {
+          name: 'test',
+          params: 'test',
+          method_name: 'test',
+          trace: {
+            correlation_id: 'test',
+            causation_id: 'test'
+          }
+        },
+        message: 'some message'
+      };
+
+      logger.debug(logPatternDTO);
+
+      expect(winstonSpy.debug).toHaveBeenCalledWith(logPatternDTO);
+      expect(winstonSpy.debug).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -26,4 +26,8 @@ export class LoggerStdout implements Logger {
   public warn(dto: LogPatternDTO): void {
     console.warn(this.stringify(dto));
   }
+
+  public debug(dto: LogPatternDTO): void {
+    console.debug(this.stringify(dto));
+  }
 }

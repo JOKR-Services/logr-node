@@ -31,6 +31,11 @@ export class Logr implements LoggerService {
     this.logger.warn(logPattern);
   }
 
+  public debug(message: string, ...params: any[]): void {
+    const logPattern = getLogPattern(this.trigger, message, ...params);
+    this.logger.debug(logPattern);
+  }
+
   public get trigger(): TriggerInDTO {
     return {
       kind: this._trigger.kind,
