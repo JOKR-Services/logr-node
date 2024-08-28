@@ -31,5 +31,13 @@ export interface LoggerService {
    */
   warn(title: string, ...params: any[]): void;
 
+  /**
+   * Logs a debug.
+   *
+   * @param {any[]} [params] - Additional parameters associated with the log (optional).
+   * @returns {void}
+   */
+  debug(title: string, ...params: any[]): void;
+
   set trigger(trigger: TriggerInDTO);
 }

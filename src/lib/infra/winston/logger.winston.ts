@@ -39,4 +39,8 @@ export class LoggerWinston implements Logger {
   public warn(dto: LogPatternDTO): void {
     LoggerWinston.winston.warn(dto);
   }
+
+  public debug(dto: LogPatternDTO): void {
+    LoggerWinston.winston.debug(dto);
+  }
 }
