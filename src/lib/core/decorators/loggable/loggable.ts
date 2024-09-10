@@ -1,3 +1,4 @@
+import { persistsMetadata } from '@core/helpers';
 import { Logr } from '@core/services';
 
 export function Loggable(loggerKey = 'logger') {
@@ -14,6 +15,8 @@ export function Loggable(loggerKey = 'logger') {
 
       return originalMethod.apply(this, args);
     };
+
+    persistsMetadata(descriptor.value, originalMethod);
 
     return descriptor;
   };
