@@ -1,3 +1,4 @@
+import { persistsMetadata } from '@core/helpers';
 import { AsyncTraceStorage } from '@core/storages';
 import { AsyncTrace } from '@core/types';
 import { generateUUID } from '@utils/index';
@@ -19,6 +20,8 @@ export function Traceable() {
 
       return originalMethod.apply(this, args);
     };
+
+    persistsMetadata(descriptor.value, originalMethod);
 
     return descriptor;
   };
