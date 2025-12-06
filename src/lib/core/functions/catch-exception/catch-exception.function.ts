@@ -23,7 +23,13 @@ export function catchException<Fn extends (...args: any[]) => any>(
     }
 
     if (options?.typeErrorHandling === 'REGISTER') {
-      AsyncTraceStorage.registeredError = { error, trigger: logger.trigger, title, params };
+      AsyncTraceStorage.registeredError = {
+        error,
+        trigger: logger.trigger,
+        title,
+        params,
+        level: 'error'
+      };
 
       return;
     }

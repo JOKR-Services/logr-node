@@ -55,7 +55,8 @@ describe('catchException', () => {
       error: ErrorMock,
       title: '',
       params: [],
-      trigger: { className: 'mockConstructor', kind: undefined }
+      trigger: { className: 'mockConstructor', kind: undefined },
+      level: 'error'
     };
 
     await AsyncTraceStorage.run({}, () => {
@@ -84,7 +85,8 @@ describe('catchException', () => {
             className: 'mockConstructor',
             kind: undefined
           },
-          params: ['param1', 'param2']
+          params: ['param1', 'param2'],
+          level: 'error'
         }
       },
       () => {

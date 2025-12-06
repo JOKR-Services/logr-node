@@ -1,3 +1,4 @@
+import { LogLevel } from '@core/dtos';
 import { CommonOptions } from '@core/types/common-options.types';
 
 export type CatchExceptionOptions = CommonOptions & {
@@ -53,4 +54,25 @@ export type CatchExceptionOptions = CommonOptions & {
    * @type {"LOG"|"REGISTER"}
    */
   typeErrorHandling?: 'LOG' | 'REGISTER';
+
+  /**
+   * @description Specifies the log level to use when logging the exception. Defaults to 'error'.
+   * This allows you to differentiate between critical errors and expected exceptions like business rule violations.
+   *
+   * @example
+   * // Business rule violation - use 'warn' or 'info'
+   * @CatchException({ level: 'warn' })
+   * validateUserAge(age: number) {
+   *   if (age < 18) throw new Error('User must be 18 or older');
+   * }
+   *
+   * // Critical system error - use 'error' (default)
+   * @CatchException({ level: 'error' })
+   * connectToDatabase() {
+   *   // ...
+   * }
+   *
+   * @type {LogLevel | ((exception: any, context?: any, ...params: any[]) => LogLevel)}
+   */
+  level?: LogLevel | ((exception: any, context?: any, ...params: any[]) => LogLevel);
 };

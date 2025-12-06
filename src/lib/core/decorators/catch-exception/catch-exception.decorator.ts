@@ -1,3 +1,4 @@
+import { LogLevel } from '@core/dtos';
 import { catchExceptionFactory } from '@core/factories';
 import { getLogParams, persistsMetadata } from '@core/helpers';
 import { LoggerService } from '@core/interfaces';
@@ -33,13 +34,24 @@ export function CatchException(
         methodName: methodName
       };
 
+      const level: LogLevel =
+        typeof options?.level === 'function'
+          ? options.level.call(this, error, this, ...args)
+          : options?.level || 'error';
+
       if (AsyncTraceStorage.outsideAsyncContext) {
-        logger.error(error, title, ...params);
+        logWithLevel(logger, level, error, title, params);
         return;
       }
 
       if (options?.typeErrorHandling === 'REGISTER') {
-        AsyncTraceStorage.registeredError = { error, trigger: logger.trigger, title, params };
+        AsyncTraceStorage.registeredError = {
+          error,
+          trigger: logger.trigger,
+          title,
+          params,
+          level
+        };
 
         return;
       }
@@ -48,11 +60,12 @@ export function CatchException(
         logger.trigger = AsyncTraceStorage.registeredError.trigger;
       }
 
-      logger.error(
-        AsyncTraceStorage.registeredError?.error ?? error,
-        AsyncTraceStorage.registeredError?.title ?? title,
-        ...(AsyncTraceStorage.registeredError?.params ?? params)
-      );
+      const finalLevel = AsyncTraceStorage.registeredError?.level ?? level;
+      const finalError = AsyncTraceStorage.registeredError?.error ?? error;
+      const finalTitle = AsyncTraceStorage.registeredError?.title ?? title;
+      const finalParams = AsyncTraceStorage.registeredError?.params ?? params;
+
+      logWithLevel(logger, finalLevel, finalError, finalTitle, finalParams);
 
       AsyncTraceStorage.clearRegisteredError();
     }
@@ -65,4 +78,28 @@ export function CatchException(
 
     return descriptor;
   };
+}
+
+function logWithLevel(
+  logger: LoggerService,
+  level: LogLevel,
+  error: any,
+  title: string,
+  params: any[]
+): void {
+  switch (level) {
+    case 'warn':
+      logger.warn(title || error.message, error, ...params);
+      break;
+    case 'info':
+      logger.info(title || error.message, error, ...params);
+      break;
+    case 'debug':
+      logger.debug(title || error.message, error, ...params);
+      break;
+    case 'error':
+    default:
+      logger.error(error, title, ...params);
+      break;
+  }
 }

@@ -1,7 +1,7 @@
 import { AsyncTrace } from '@core/types';
 import { AsyncLocalStorage } from 'async_hooks';
 
-import { RegisteredErrorDTO, TriggerInDTO } from '../../dtos';
+import { RegisteredErrorDTO } from '../../dtos';
 
 export class AsyncTraceStorage {
   private static instance: AsyncTraceStorage;
@@ -60,12 +60,7 @@ export class AsyncTraceStorage {
     }
   }
 
-  public static set registeredError(dto: {
-    error: any;
-    trigger: TriggerInDTO;
-    title: string;
-    params: any[];
-  }) {
+  public static set registeredError(dto: RegisteredErrorDTO) {
     const store = this.getStore();
     if (!store) {
       return;

@@ -84,7 +84,8 @@ describe('@CatchException', () => {
             },
             title: '',
             params: [],
-            error: ErrorMock
+            error: ErrorMock,
+            level: 'error'
           });
         });
     });
@@ -99,7 +100,8 @@ describe('@CatchException', () => {
         methodName: 'customMethod'
       },
       params: ['param1', 'param2'],
-      title: 'some title'
+      title: 'some title',
+      level: 'error'
     };
 
     const clearRegisteredErrorSpy = jest.spyOn(AsyncTraceStorage, 'clearRegisteredError');

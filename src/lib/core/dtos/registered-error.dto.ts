@@ -1,5 +1,7 @@
 import { TriggerInDTO } from '@core/dtos/trigger.dto';
 
+export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
+
 export type RegisteredErrorDTO = {
   /**
    * The catched exception.
@@ -20,4 +22,11 @@ export type RegisteredErrorDTO = {
   params: any[];
 
   title: string;
+
+  /**
+   * The log level to use when logging the error.
+   *
+   * @type {LogLevel}
+   */
+  level: LogLevel;
 };
