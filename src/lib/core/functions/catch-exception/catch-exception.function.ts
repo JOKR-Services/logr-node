@@ -4,6 +4,10 @@ import { Logr } from '@core/services';
 import { AsyncTraceStorage } from '@core/storages';
 import { CatchExceptionOptions } from '@core/types';
 
+/**
+ * @deprecated Support for the catchException high-order function will be discontinued soon.
+ * It is recommended to use the @CatchException decorator for exception handling instead.
+ */
 export function catchException<Fn extends (...args: any[]) => any>(
   fn: Fn,
   options?: CatchExceptionOptions,
